@@ -14,6 +14,7 @@ interface PostRepositoryInterface extends AddGetAllInterface, UpdateInterface, F
     public function find_post_number_of_comments($post_id);
     public function find_post_number_of_tags($post_id);
     public function find_post_number_of_views($post_id);
+    public function find_post_number_of_followers($post_id);
     public function update_post_title($data);
     public function update_post_body($data);
     public function update_post_title_and_body($data);
@@ -22,4 +23,6 @@ interface PostRepositoryInterface extends AddGetAllInterface, UpdateInterface, F
     public function increace_post_answer_number($post_id);
     public function increace_post_tags_number($post_id);
     public function increace_post_comments_number($post_id);
+    public function increace_post_followers_number($post_id);
+    public function is_owner($post_id, $user_id);
 }

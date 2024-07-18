@@ -11,7 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-
         Schema::dropIfExists('users');
         Schema::create('users', function (Blueprint $table) {
             $table->string('id')->primary();
@@ -55,14 +54,22 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if(Schema::hasColumn('posts', 'posts_owner_id_foreign')){
-            Schema::table('posts', function (Blueprint $table) {
-                $table->dropForeign('posts_owner_id_foreign');
-            });
+        if(Schema::hasTable('posts')){
+            $foreign_keys = Schema::getForeignKeys('posts');
+            if(in_array('posts_owner_id_foreign', $foreign_keys)){
+                Schema::table('posts', function (Blueprint $table) {
+                    $table->dropForeign('posts_owner_id_foreign');
+                });
+            }
+        }        
+        if(Schema::hasTable('follow_posts')){
+            $foreign_keys = Schema::getForeignKeys('follow_posts');
+            if(in_array('follow_posts_user_id_foreign', $foreign_keys)){
+                Schema::table('posts', function (Blueprint $table) {
+                    $table->dropForeign('follow_posts_user_id_foreign');
+                });
+            }
         }
-        // Schema::table('posts', function (Blueprint $table) {
-        //     $table->dropForeign('posts_owner_id_foreign');
-        // });
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

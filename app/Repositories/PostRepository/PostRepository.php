@@ -71,7 +71,9 @@ class PostRepository implements PostRepositoryInterface
     public function find_post_number_of_views($post_id){
         return DB::table('posts')->where(['id'=>$post_id])->get()->first()->views;
     }
-
+    public function find_post_number_of_followers($post_id){
+        return DB::table('posts')->where(['id'=>$post_id])->get()->first()->followers;
+    }
     public function increace_post_views_number($post_id){
         $views = $this->find_post_number_of_views($post_id);
         DB::table('posts')->where(['id'=>$post_id])->update([
@@ -100,5 +102,19 @@ class PostRepository implements PostRepositoryInterface
             'comments'=>$comments += 1 
         ]);
         return $comments += 1;
+    }
+    public function increace_post_followers_number($post_id){
+        $followers = $this->find_post_number_of_followers($post_id);
+        DB::table('posts')->where(['id'=>$post_id])->update([
+            'followers'=>$followers += 1 
+        ]);
+        return $followers += 1;
+    }
+
+    public function is_owner($post_id, $user_id){
+        return DB::table('posts')->where([
+            'id'=>$post_id,
+            'owner_id'=> $user_id
+        ])->get()->first();
     }
 }

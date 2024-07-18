@@ -27,15 +27,22 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if(Schema::hasColumn('posts', 'posts_post_type_id_foreign')){
-            Schema::table('posts', function (Blueprint $table) {
-                $table->dropForeign('posts_post_type_id_foreign');
-            });
+        if(Schema::hasTable('posts')){
+            $foreign_keys = Schema::getForeignKeys('posts');
+            if(in_array('posts_post_type_id_foreign', $foreign_keys)){
+                Schema::table('posts', function (Blueprint $table) {
+                    $table->dropForeign('posts_post_type_id_foreign');
+                });
+            }
         }
-
-        // Schema::table('posts', function (Blueprint $table) {
-        //     $table->dropForeign('posts_post_type_id_foreign');
-        // });
+        if(Schema::hasTable('follow_posts')){
+            $foreign_keys = Schema::getForeignKeys('follow_posts');
+            if(in_array('follow_posts_post_id_foreign', $foreign_keys)){
+                Schema::table('posts', function (Blueprint $table) {
+                    $table->dropForeign('follow_posts_post_id_foreign');
+                });
+            }
+        }
         Schema::dropIfExists('post_types');
     }
 };

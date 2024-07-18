@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Repositories\BadgeRepository\BadgeRepository;
 use App\Repositories\BadgeRepository\BadgeRepositoryInterface;
+use App\Repositories\FollwPostRepository\FollowPostRepository;
+use App\Repositories\FollwPostRepository\FollowPostRepositoryInterface;
 use App\Repositories\PostRepository\PostRepository;
 use App\Repositories\PostRepository\PostRepositoryInterface;
 use App\Repositories\PostTypeRepository\PostTypeRepository;
@@ -30,6 +32,8 @@ use App\Services\AuthService\TwoFactorAuthenticationService\TwoFactorAuthenticat
 use App\Services\AuthService\TwoFactorAuthenticationService\TwoFactorAuthenticationServiceInterface;
 use App\Services\BadgeService\BadgeService;
 use App\Services\BadgeService\BadgeServiceInterface;
+use App\Services\FollwPostService\FollowPostService;
+use App\Services\FollwPostService\FollowPostServiceInterface;
 use App\Services\PostService\PostService;
 use App\Services\PostService\PostServiceInterface;
 use App\Services\PostTypeService\PostTypeService;
@@ -62,12 +66,14 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PostTypeServiceInterface::class, PostTypeService::class);
         $this->app->bind(VoteTypeServiceInterface::class, VoteTypeService::class);
         $this->app->bind(PostServiceInterface::class, PostService::class);
+        $this->app->bind(FollowPostServiceInterface::class, FollowPostService::class);
         // repositories
         $this->app->bind(BadgeRepositoryInterface::class, BadgeRepository::class);
         $this->app->bind(UserBadgeRepositoryInterface::class, UserBadgeRepository::class);
         $this->app->bind(VoteTypeRepositoryInterface::class, VoteTypeRepository::class);
         $this->app->bind(PostTypeRepositoryInterface::class, PostTypeRepository::class);
         $this->app->bind(PostRepositoryInterface::class, PostRepository::class);
+        $this->app->bind(FollowPostRepositoryInterface::class, FollowPostRepository::class);
     }
 
     /**

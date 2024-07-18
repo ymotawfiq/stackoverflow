@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginLogoutController;
 use App\Http\Controllers\Auth\RegisterAndUserController;
 use App\Http\Controllers\Auth\TwoFactorAuthenticatonController;
 use App\Http\Controllers\BadgeController;
+use App\Http\Controllers\FollowPostController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostTypesController;
 use App\Http\Controllers\UserBadgesController;
@@ -81,8 +82,15 @@ Route::group(['prefix'=> 'post'], function () {
     Route::delete('{id}', [PostController::class,'delete_post_by_id']);
     Route::get('', [PostController::class,'all_posts']);
     Route::get('user/{id_user_name_email}', [PostController::class,'user_posts']);
+    //
+    Route::post('follow/{post_id}', [FollowPostController::class,'follow_post']);
+    Route::delete('unfollow/{post_id}', [FollowPostController::class,'un_follow_post']);
+    Route::get('isfollowed/{post_id}', [FollowPostController::class,'is_user_following_post']);
 });
 
 
-
+Route::group(['prefix'=> 'follow_post'], function () {
+    Route::get('', [FollowPostController::class,'find_user_following_posts']);
+    Route::get('post/{id}', [FollowPostController::class,'find_post_following_users']);
+});
 
