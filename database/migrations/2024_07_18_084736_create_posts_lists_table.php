@@ -36,6 +36,14 @@ return new class extends Migration
                 $table->dropForeign('posts_lists_user_id_foreign');
             });
         }
+        if(Schema::hasTable('saved_posts')){
+            $foreign_keys = Schema::getForeignKeys('saved_posts');
+            if(in_array('saved_posts_list_id_foreign', $foreign_keys)){
+                Schema::table('saved_posts', function(Blueprint $table){
+                    $table->dropForeign(['saved_posts_list_id_foreign']);
+                });
+            }
+        }
         Schema::dropIfExists('posts_lists');
     }
 };

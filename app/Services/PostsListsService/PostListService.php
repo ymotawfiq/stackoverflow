@@ -12,9 +12,7 @@ use Ramsey\Uuid\Uuid;
 
 class PostListService implements PostListServiceInterface
 {
-    /**
-     * Create a new class instance.
-     */
+
     private PostListRepositoryInterface $_postListRepositoryInterface;
     public function __construct(PostListRepositoryInterface $_postListRepositoryInterface)
     {
@@ -29,7 +27,7 @@ class PostListService implements PostListServiceInterface
         }
         $newList = $this->_postListRepositoryInterface->create([
             'id'=>Uuid::uuid4()->toString(),
-            'name'=> $request->name,
+            'name'=> strtolower($request->name),
             'user_id'=>$user->id
         ]);
         return response()->json(

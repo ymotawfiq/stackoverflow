@@ -42,10 +42,25 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('posts', function (Blueprint $table) {
-            $table->dropForeign('posts_owner_id_foreign');
-            $table->dropForeign('posts_post_type_id_foreign');
-        });
+        $foreign_keys = Schema::getForeignKeys('posts');
+        if(in_array('posts_owner_id_foreign', $foreign_keys)){
+            Schema::table('posts', function(Blueprint $table){
+                $table->dropForeign(['posts_owner_id_foreign']);
+            });
+        }
+        if(in_array('posts_post_type_id_foreign', $foreign_keys)){
+            Schema::table('posts', function(Blueprint $table){
+                $table->dropForeign(['posts_post_type_id_foreign']);
+            });
+        }
+        if(Schema::hasTable('saved_posts')){
+            $foreign_keys = Schema::getForeignKeys('saved_posts');
+            if(in_array('saved_posts_post_id_foreign', $foreign_keys)){
+                Schema::table('saved_posts', function(Blueprint $table){
+                    $table->dropForeign(['saved_posts_post_id_foreign']);
+                });
+            }
+        }
         Schema::dropIfExists('posts');
     }
 };

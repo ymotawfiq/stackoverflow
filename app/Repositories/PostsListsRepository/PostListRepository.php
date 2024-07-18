@@ -28,6 +28,12 @@ class PostListRepository implements PostListRepositoryInterface
             'id'=>$id
         ])->get()->first();
     }
+    public function find_by_name($name, $user_id){
+        return DB::table('posts_lists')->where([
+            'user_id'=>$user_id,
+            'name'=>strtolower($name)
+        ])->get()->first();
+    }
     public function update($data){
         DB::table('posts_lists')->where('id', $data->id)->update([
             'name'=>$data->name

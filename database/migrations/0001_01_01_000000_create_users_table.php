@@ -78,6 +78,14 @@ return new class extends Migration
                 });
             }
         }
+        if(Schema::hasTable('saved_posts')){
+            $foreign_keys = Schema::getForeignKeys('saved_posts');
+            if(in_array('saved_posts_user_id_foreign', $foreign_keys)){
+                Schema::table('saved_posts', function(Blueprint $table){
+                    $table->dropForeign(['saved_posts_user_id_foreign']);
+                });
+            }
+        }
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
