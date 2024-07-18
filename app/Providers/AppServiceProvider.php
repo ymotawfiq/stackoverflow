@@ -14,6 +14,8 @@ use App\Repositories\PostTypeRepository\PostTypeRepository;
 use App\Repositories\PostTypeRepository\PostTypeRepositoryInterface;
 use App\Repositories\SavePostRepository\SavePostRepository;
 use App\Repositories\SavePostRepository\SavePostRepositoryInterface;
+use App\Repositories\TagsRepository\TagsRepository;
+use App\Repositories\TagsRepository\TagsRepositoryInterface;
 use App\Repositories\UserBadgeRepository\UserBadgeRepository;
 use App\Repositories\UserBadgeRepository\UserBadgeRepositoryInterface;
 use App\Repositories\VoteTypeRepository\VoteTypeRepository;
@@ -46,6 +48,8 @@ use App\Services\PostTypeService\PostTypeService;
 use App\Services\PostTypeService\PostTypeServiceInterface;
 use App\Services\SavePostService\SavePostService;
 use App\Services\SavePostService\SavePostServiceInterface;
+use App\Services\TagsService\TagsService;
+use App\Services\TagsService\TagsServiceInterface;
 use App\Services\UserBadgeService\UserBadgeService;
 use App\Services\UserBadgeService\UserBadgeServiceInterface;
 use App\Services\VoteTypeService\VoteTypeService;
@@ -77,6 +81,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(FollowPostServiceInterface::class, FollowPostService::class);
         $this->app->bind(PostListServiceInterface::class, PostListService::class);
         $this->app->bind(SavePostServiceInterface::class, SavePostService::class);
+        $this->app->bind(TagsServiceInterface::class, TagsService::class);
         // repositories
         $this->app->bind(BadgeRepositoryInterface::class, BadgeRepository::class);
         $this->app->bind(UserBadgeRepositoryInterface::class, UserBadgeRepository::class);
@@ -86,6 +91,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(FollowPostRepositoryInterface::class, FollowPostRepository::class);
         $this->app->bind(PostListRepositoryInterface::class, PostListRepository::class);
         $this->app->bind(SavePostRepositoryInterface::class, SavePostRepository::class);
+        $this->app->bind(TagsRepositoryInterface::class, TagsRepository::class);
     }
 
     /**
