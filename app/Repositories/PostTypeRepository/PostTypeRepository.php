@@ -25,7 +25,7 @@ class PostTypeRepository implements PostTypeRepositoryInterface
             'type'=>$data->type,
             'normalized_type'=>strtoupper($data->type),
         ]);
-        return $this->find_by_id($data['id']);
+        return $this->find_by_id($data->id);
     }
     public function find_by_normalized_type($normalized_type){
         return DB::table('post_types')->where('normalized_type', strtoupper($normalized_type))->get()->first();

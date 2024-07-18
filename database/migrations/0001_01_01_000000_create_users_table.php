@@ -70,6 +70,14 @@ return new class extends Migration
                 });
             }
         }
+        if(Schema::hasTable('posts_lists')){
+            $foreign_keys = Schema::getForeignKeys('posts_lists');
+            if(in_array('posts_lists_user_id_foreign', $foreign_keys)){
+                Schema::table('posts_lists', function(Blueprint $table){
+                    $table->dropForeign('posts_lists_user_id_foreign');
+                });
+            }
+        }
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

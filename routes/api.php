@@ -9,9 +9,11 @@ use App\Http\Controllers\Auth\TwoFactorAuthenticatonController;
 use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\FollowPostController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostsListsController;
 use App\Http\Controllers\PostTypesController;
 use App\Http\Controllers\UserBadgesController;
 use App\Http\Controllers\VoteTypeController;
+use App\Models\PostsLists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -94,3 +96,10 @@ Route::group(['prefix'=> 'follow_post'], function () {
     Route::get('post/{id}', [FollowPostController::class,'find_post_following_users']);
 });
 
+Route::group(['prefix'=> 'posts_lists'], function () {
+    Route::post('', [PostsListsController::class,'create']);
+    Route::put('', [PostsListsController::class,'update']);
+    Route::get('{id}', [PostsListsController::class,'find_by_id']);
+    Route::delete('{id}', [PostsListsController::class,'delete_by_id']);
+    Route::get('', [PostsListsController::class,'user_lists']);
+});
