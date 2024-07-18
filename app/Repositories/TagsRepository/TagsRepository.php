@@ -8,7 +8,7 @@ class TagsRepository implements TagsRepositoryInterface
 {
     public function create($data){
         DB::table('tags')->insert($data);
-        return $this->find_by_id($data->id);
+        return $this->find_by_id($data['id']);
     }
     public function all(){
         return DB::table('tags')->get();
@@ -25,5 +25,8 @@ class TagsRepository implements TagsRepositoryInterface
             'normalized_name'=>strtoupper($data->name),
         ]);
         return $this->find_by_id($data->id);
+    }
+    public function find_by_normalized_name($name){
+        return DB::table('tags')->where('normalized_name', strtoupper($name))->get()->first();
     }
 }

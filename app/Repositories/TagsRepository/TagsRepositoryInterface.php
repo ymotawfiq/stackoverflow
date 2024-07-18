@@ -7,5 +7,5 @@ use App\Repositories\Generic\UpdateInterface;
 
 interface TagsRepositoryInterface extends AddGetAllInterface, UpdateInterface, FindDeleteInterface
 {
-    
+    public function find_by_normalized_name($name);
 }

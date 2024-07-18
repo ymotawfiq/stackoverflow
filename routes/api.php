@@ -12,6 +12,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostsListsController;
 use App\Http\Controllers\PostTypesController;
 use App\Http\Controllers\SavePostController;
+use App\Http\Controllers\TagsController;
 use App\Http\Controllers\UserBadgesController;
 use App\Http\Controllers\VoteTypeController;
 use App\Models\PostsLists;
@@ -111,4 +112,12 @@ Route::group(['prefix'=> 'saved_posts'], function () {
     Route::delete('{id}', [SavePostController::class,'us_save_post']);
     Route::get('', [SavePostController::class,'find_user_saved_posts']);
     Route::get('list/{id}', [SavePostController::class,'find_user_saved_posts_by_list_id']);
+});
+
+Route::group(['prefix'=> 'tags'], function () {
+    Route::post('', [TagsController::class,'create']);
+    Route::put('', [TagsController::class,'update']);
+    Route::get('{id}', [TagsController::class,'find_by_id']);
+    Route::delete('{id}', [TagsController::class,'delete_by_id']);
+    Route::get('', [TagsController::class,'all']);
 });
