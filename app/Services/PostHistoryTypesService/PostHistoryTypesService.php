@@ -4,7 +4,6 @@ namespace App\Services\PostHistoryTypesService;
 
 use App\Classes\CheckValidation;
 use App\Models\ResponseModel\Response;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Repositories\PostHistoryTypesRepository\PostHistoryTypesRepositoryInterface;
 use Illuminate\Support\Facades\Validator;
@@ -20,7 +19,7 @@ class PostHistoryTypesService implements PostHistoryTypesServiceInterface
     {
         $this->_postHistoryTypesRepositoryInterface = $_postHistoryTypesRepositoryInterface;
     }
-    public function create(Request $request, User $user){
+    public function create(Request $request){
         $validator = $this->validate_add_type($request);
         if(!$validator['is_success']){
             return response()->json(
@@ -36,7 +35,7 @@ class PostHistoryTypesService implements PostHistoryTypesServiceInterface
             Response::_201_created_('history type created successfully', $type)
         );
     }
-    public function update(Request $request, User $user){
+    public function update(Request $request){
         $validator = $this->validate_update_type($request);
         if(!$validator['is_success']){
             return response()->json(
@@ -48,7 +47,7 @@ class PostHistoryTypesService implements PostHistoryTypesServiceInterface
             Response::_200_success_('history type updated successfully', $updated_type)
         );
     }
-    public function delete_by_id($id, User $user){
+    public function delete_by_id($id){
         $type = $this->_postHistoryTypesRepositoryInterface->find_by_id($id);
         if($type==null){
             return response()->json(
