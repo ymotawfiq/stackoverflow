@@ -3,26 +3,31 @@
 namespace App\Repositories\PostRepository;
 
 use App\Repositories\Generic\AddGetAllInterface;
+use App\Repositories\Generic\AllInterface;
+use App\Repositories\Generic\CreateInterface;
+use App\Repositories\Generic\DeleteInterface;
 use App\Repositories\Generic\FindDeleteInterface;
+use App\Repositories\Generic\FindInterface;
 use App\Repositories\Generic\UpdateInterface;
 
-interface PostRepositoryInterface extends AddGetAllInterface, UpdateInterface, FindDeleteInterface
+interface PostRepositoryInterface extends 
+    CreateInterface, UpdateInterface, FindInterface, DeleteInterface, AllInterface
 {
-    public function find_user_posts_by_user_id($user_id);
-    public function find_post_by_id_user_id($id, $user_id);
-    public function find_post_number_of_answers($post_id);
-    public function find_post_number_of_comments($post_id);
-    public function find_post_number_of_tags($post_id);
-    public function find_post_number_of_views($post_id);
-    public function find_post_number_of_followers($post_id);
-    public function update_post_title($data);
-    public function update_post_body($data);
-    public function update_post_title_and_body($data);
-    public function update_post_type($data);
-    public function increace_post_views_number($post_id);
-    public function increace_post_answer_number($post_id);
-    public function increace_post_tags_number($post_id);
-    public function increace_post_comments_number($post_id);
-    public function increace_post_followers_number($post_id);
-    public function is_owner($post_id, $user_id);
+    public function findUserPostsByUserId($user_id);
+    public function findPostByIdUserId($id, $user_id);
+    public function findPostNumberOfAnswers($post_id);
+    public function findPostNumberOfComments($post_id);
+    public function findPostNumberOfTags($post_id);
+    public function findPostNumberOfViews($post_id);
+    public function findPostNumberOfFollowers($post_id);
+    public function updatePostTitle($data);
+    public function updatePostBody($data);
+    public function updatePostTitleAndBody($data);
+    public function updatePostType($data);
+    public function increacePostViewsNumber($post_id);
+    public function increacePostAnswerNumber($post_id);
+    public function increacePostTagsNumber($post_id);
+    public function increacePostCommentsNumber($post_id);
+    public function increacePostFollowersNumber($post_id);
+    public function isOwner($post_id, $user_id);
 }

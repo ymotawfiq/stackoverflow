@@ -9,7 +9,7 @@ interface PostHistoryTypesServiceInterface
 {
     public function create(Request $request);
     public function update(Request $request);
-    public function delete_by_id($id);
-    public function find_by_id($id);
+    public function deleteById($id);
+    public function findById($id);
     public function all();
 }

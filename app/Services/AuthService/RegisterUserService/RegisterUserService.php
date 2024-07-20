@@ -16,9 +16,9 @@ use Ramsey\Uuid\Uuid;
 
 class RegisterUserService implements RegisterUserServiceInterface
 {
-    private RolesServiceInterface $_roles_service_interface;
-    public function __construct(RolesServiceInterface $_roles_service_interface){
-        $this->_roles_service_interface = $_roles_service_interface;
+    private RolesServiceInterface $_rolesService;
+    public function __construct(RolesServiceInterface $_rolesService){
+        $this->_rolesService = $_rolesService;
     }
     
     public  function register(Request $request) : JsonResponse{
@@ -26,7 +26,7 @@ class RegisterUserService implements RegisterUserServiceInterface
         if($validate_request['is_success']){
             DB::beginTransaction();
             $user = $this->create_user($request);
-            $user_role = $this->_roles_service_interface->assign_roles_to_user($user, ['USER']);
+            $user_role = $this->_rolesService->assignRolesToUser($user, ['USER']);
             if(!$user_role->getData()->is_success){
                 DB::rollBack();
                 return $user_role;
@@ -36,14 +36,15 @@ class RegisterUserService implements RegisterUserServiceInterface
             return response()->json(
                 Response::_201_created_(
                     'user created successfully and verification link sent to you',[
-                    'user'=> $user, 'roles'=> $this->_roles_service_interface->get_user_roles_names($user)
+                    'user'=> $user, 'roles'=> $this->_rolesService
+                        ->getUserRolesNames($user)
                     ])
             );
         }
         return response()->json($validate_request);
     }
     
-    public function get_current_user() : JsonResponse{
+    public function getCurrentUser() : JsonResponse{
         $user = auth()->user();
         if($user!=null){
             return response()->json(
@@ -54,7 +55,7 @@ class RegisterUserService implements RegisterUserServiceInterface
             Response::_204_no_content_('no users found')
         );
     }
-    public function get_user(Request $request) : JsonResponse{
+    public function getUser(Request $request) : JsonResponse{
         $validator = $this->validate_get_user($request);
         if($validator['is_success']){
             $user = GenericUser::get_user_by_id_or_email_or_user_name(

@@ -12,20 +12,20 @@ use Illuminate\Http\Request;
 
 class PostTypesController extends Controller
 {
-    private PostTypeServiceInterface $_post_type_service_interface;
-    private RolesServiceInterface $_roles_service_interface;
-    public function __construct(PostTypeServiceInterface $_post_type_service_interface, 
-    RolesServiceInterface $_roles_service_interface){
-        $this->_post_type_service_interface = $_post_type_service_interface;
-        $this->_roles_service_interface = $_roles_service_interface;
+    private PostTypeServiceInterface $_postTypeService;
+    private RolesServiceInterface $_rolesService;
+    public function __construct(PostTypeServiceInterface $_postTypeService, 
+    RolesServiceInterface $_rolesService){
+        $this->_postTypeService = $_postTypeService;
+        $this->_rolesService = $_rolesService;
     }
 
-    public function add_post_type(Request $request){
+    public function addPostType(Request $request){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                if($this->_roles_service_interface->is_user_in_role($user, 'ADMIN')){
-                    return $this->_post_type_service_interface->add_post_type($request);
+                if($this->_rolesService->isUserInRole($user, 'ADMIN')){
+                    return $this->_postTypeService->addPostType($request);
                 }
                 return response()->json(Response::_403_forbidden_());
             }
@@ -36,12 +36,12 @@ class PostTypesController extends Controller
         }
     }
 
-    public function update_post_type(Request $request){
+    public function updatePostType(Request $request){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                if($this->_roles_service_interface->is_user_in_role($user, 'ADMIN')){
-                    return $this->_post_type_service_interface->update_post_type($request);
+                if($this->_rolesService->isUserInRole($user, 'ADMIN')){
+                    return $this->_postTypeService->updatePostType($request);
                 }
                 return response()->json(Response::_403_forbidden_());
             }
@@ -52,21 +52,21 @@ class PostTypesController extends Controller
         }
     }
 
-    public function find_post_type_by_id($id){
+    public function findById($id){
         try{
-            return $this->_post_type_service_interface->find_post_type($id);
+            return $this->_postTypeService->findPostType($id);
         }
         catch(Exception $e){
             return response()->json(Response::_500_internel_server_error_($e->getMessage()));
         }
     }
 
-    public function delete_post_type_by_id($id){
+    public function deleteById($id){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                if($this->_roles_service_interface->is_user_in_role($user, 'ADMIN')){
-                    return $this->_post_type_service_interface->delete_post_type($id);
+                if($this->_rolesService->isUserInRole($user, 'ADMIN')){
+                    return $this->_postTypeService->deletePostType($id);
                 }
                 return response()->json(Response::_403_forbidden_());
             }
@@ -79,7 +79,7 @@ class PostTypesController extends Controller
 
     public function all(){
         try{
-            return $this->_post_type_service_interface->all();
+            return $this->_postTypeService->all();
         }
         catch(Exception $e){
             return response()->json(Response::_500_internel_server_error_($e->getMessage()));

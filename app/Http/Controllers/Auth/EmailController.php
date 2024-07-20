@@ -11,9 +11,9 @@ use Illuminate\Http\Request;
 
 class EmailController extends Controller
 {
-    private EmailServiceInterface $_email_service_interface;
-    public function __construct(EmailServiceInterface $_email_service_interface){
-        $this->_email_service_interface = $_email_service_interface;
+    private EmailServiceInterface $_emailService;
+    public function __construct(EmailServiceInterface $_emailService){
+        $this->_emailService = $_emailService;
     }
 
 
@@ -44,8 +44,8 @@ class EmailController extends Controller
 
     public function resend(Request $request){
         try{
-            return $this->_email_service_interface
-                ->resend_email_verification_link($request);
+            return $this->_emailService
+                ->resendEmailVerificationLink($request);
         }
         catch(Exception $e){
             return response()->json(

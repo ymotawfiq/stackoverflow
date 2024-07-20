@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AccountService implements AccountServiceInterface
 {
-    public function update_account(Request $request, $user) : JsonResponse{
+    public function updateAccount(Request $request, $user) : JsonResponse{
         $validator = $this->validate_update_account($request);
         if($validator['is_success']){
             User::where('id', $user->id)->update($validator['data']);
@@ -20,7 +20,7 @@ class AccountService implements AccountServiceInterface
         }
         return response()->json($validator);
     }
-    public function update_display_name(Request $request, $user) : JsonResponse{
+    public function updateDisplayName(Request $request, $user) : JsonResponse{
         $validator = $this->validate_update_display_name($request);
         if($validator['is_success']){
             User::where(['id'=>$user->id])->update([
@@ -30,7 +30,7 @@ class AccountService implements AccountServiceInterface
         }
         return response()->json($validator);
     }
-    public function update_user_name(Request $request, $user) : JsonResponse{
+    public function updateUserName(Request $request, $user) : JsonResponse{
         $validator = $this->validate_update_user_name( $request);
         if($validator['is_success']){
             User::where(['id'=>$user->id])->update([

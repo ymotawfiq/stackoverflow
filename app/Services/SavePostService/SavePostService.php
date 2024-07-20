@@ -17,15 +17,15 @@ class SavePostService implements SavePostServiceInterface
     /**
      * Create a new class instance.
      */
-    private SavePostRepositoryInterface $_savePostRepositoryInterface;
-    private PostRepositoryInterface $_postRepositoryInterface;
-    private PostListRepositoryInterface $_postListRepositoryInterface;
-    public function __construct(SavePostRepositoryInterface $_savePostRepositoryInterface,
-    PostRepositoryInterface $_postRepositoryInterface, PostListRepositoryInterface $_postListRepositoryInterface)
+    private SavePostRepositoryInterface $_savePostRepository;
+    private PostRepositoryInterface $_postRepository;
+    private PostListRepositoryInterface $_postListRepository;
+    public function __construct(SavePostRepositoryInterface $_savePostRepository,
+    PostRepositoryInterface $_postRepository, PostListRepositoryInterface $_postListRepository)
     {
-        $this->_savePostRepositoryInterface = $_savePostRepositoryInterface;
-        $this->_postRepositoryInterface = $_postRepositoryInterface;
-        $this->_postListRepositoryInterface = $_postListRepositoryInterface;
+        $this->_savePostRepository = $_savePostRepository;
+        $this->_postRepository = $_postRepository;
+        $this->_postListRepository = $_postListRepository;
     }
     public function savePost(Request $request, User $user){
         $validator = $this->validate_save_post($request);
@@ -40,21 +40,21 @@ class SavePostService implements SavePostServiceInterface
         return $this->create_with_list($request, $user);
     }
     public function unSavePost($id, User $user){
-        $saved_post = $this->_savePostRepositoryInterface
-            ->find_user_saved_post_by_id_user_id($id, $user->id);
+        $saved_post = $this->_savePostRepository
+            ->findUserSavedPostByIdUserId($id, $user->id);
         if($saved_post==null){
             return response()->json(
                 Response::_403_forbidden_()
             );
         }
-        $this->_savePostRepositoryInterface->delete_by_id($id);
+        $this->_savePostRepository->deleteById($id);
         return response()->json(
             Response::_204_no_content_('post unsaved successfully')
         );
     }
     public function getUserSavedPostById($id, User $user){
-        $saved_post = $this->_savePostRepositoryInterface
-            ->find_user_saved_post_by_id_user_id($id, $user->id);
+        $saved_post = $this->_savePostRepository
+            ->findUserSavedPostByIdUserId($id, $user->id);
         if($saved_post==null){
             return response()->json(
                 Response::_404_not_found_('no saved posts found')
@@ -65,7 +65,7 @@ class SavePostService implements SavePostServiceInterface
         );
     }
     public function getUserSavedPosts(User $user){
-        $posts = $this->_savePostRepositoryInterface->find_user_saved_posts($user->id);
+        $posts = $this->_savePostRepository->findUserSavedPosts($user->id);
         if($posts==null||$posts->count()==0){
             return response()->json(
                 Response::_204_no_content_("no posts found")
@@ -76,8 +76,8 @@ class SavePostService implements SavePostServiceInterface
         );
     }   
     public function getUserSavedPostsByListId($list_id, User $user){
-        $posts = $this->_savePostRepositoryInterface
-            ->find_user_saved_posts_by_list($user->id, $list_id);
+        $posts = $this->_savePostRepository
+            ->findUserSavedPostsByList($user->id, $list_id);
         if($posts==null||$posts->count()==0){
             return response()->json(
                 Response::_204_no_content_("no posts found")
@@ -90,16 +90,16 @@ class SavePostService implements SavePostServiceInterface
 
     private function is_post_saved($post_id, $list_id, $user_id) : bool{
         
-        $saved_before = $this->_savePostRepositoryInterface
-            ->find_user_saved_post_by_list_id_user_id_post_id($list_id, $user_id, $post_id);        
+        $saved_before = $this->_savePostRepository
+            ->findUserSavedPostByListIdUserIdPostId($list_id, $user_id, $post_id);        
         if($saved_before!=null){
             return true;
         }
         return false;
     }
     private function create_with_list(Request $request, User $user){
-        $list = $this->_postListRepositoryInterface
-            ->find_list_by_id_user_id($request->list_id, $user->id);
+        $list = $this->_postListRepository
+            ->findListByIdUserId($request->list_id, $user->id);
         if($list==null){
             return response()->json(
                 Response::_404_not_found_('list not found')
@@ -110,7 +110,7 @@ class SavePostService implements SavePostServiceInterface
                 Response::_403_forbidden_('post saved beefore')
             );
         }
-        $saved_post = $this->_savePostRepositoryInterface->create([
+        $saved_post = $this->_savePostRepository->create([
             'id'=>Uuid::uuid4()->toString(),
             'post_id'=>$request->post_id,
             'user_id'=> $user->id,
@@ -121,10 +121,9 @@ class SavePostService implements SavePostServiceInterface
         );
     }
     private function create_without_list(Request $request, User $user){
-        $list = $this->_postListRepositoryInterface
-            ->find_by_name('default', $user->id);
+        $list = $this->_postListRepository->findByName('default', $user->id);
         if($list==null){
-            $list = $this->_postListRepositoryInterface->create(
+            $list = $this->_postListRepository->create(
                 [
                     'user_id'=> $user->id,
                     'id'=>Uuid::uuid4()->toString(),
@@ -137,7 +136,7 @@ class SavePostService implements SavePostServiceInterface
                 Response::_403_forbidden_('post saved beefore')
             );
         }
-        $saved_post = $this->_savePostRepositoryInterface->create([
+        $saved_post = $this->_savePostRepository->create([
             'user_id'=> $user->id,
             'post_id'=>$request->post_id,
             'list_id'=> $list->id,
@@ -151,14 +150,14 @@ class SavePostService implements SavePostServiceInterface
     private function validate_save_post(Request $request){
         $validator = Validator::make($request->all(),[
             'post_id'=>['required', function($attribute, $value, $fail){
-                $post = $this->_postRepositoryInterface->find_by_id($value);
+                $post = $this->_postRepository->findById($value);
                 if($post==null){
                     $fail('post not found');
                 }
             }],
             'list_id'=> ['nullable', function($attribute, $value, $fail){
                 if($value!=null && strlen($value)>=0){
-                    $list = $this->_postListRepositoryInterface->find_by_id($value);
+                    $list = $this->_postListRepository->findById($value);
                     if($list==null){
                         $fail('list not found');
                     }

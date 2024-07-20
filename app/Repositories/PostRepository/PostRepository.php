@@ -13,13 +13,13 @@ class PostRepository implements PostRepositoryInterface
     public function all(){
         return DB::table('posts')->get();
     }
-    public function delete_by_id($id){
+    public function deleteById($id){
         DB::table('posts')->where('id', $id)->delete();
     }
-    public function find_by_id($id){
+    public function findById($id){
         return DB::table('posts')->where('id', $id)->get()->first();
     }
-    public function find_post_by_id_user_id($id, $user_id){
+    public function findPostByIdUserId($id, $user_id){
         return DB::table('posts')
             ->where(['id' => $id, 'owner_id'=>$user_id])->get()->first();
     }
@@ -29,89 +29,89 @@ class PostRepository implements PostRepositoryInterface
             'body'=>$data->body,
             'post_type_id'=> $data->post_type,
         ]);
-        return $this->find_by_id($data->id);
+        return $this->findById($data->id);
     }
-    public function update_post_title($data){
+    public function updatePostTitle($data){
         DB::table('posts')->where('id', $data->id)->update([
             'title'=>$data->title,
         ]);
-        return $this->find_by_id($data->id);
+        return $this->findById($data->id);
     }
-    public function update_post_body($data){
+    public function updatePostBody($data){
         DB::table('posts')->where('id', $data->id)->update([
             'body'=>$data->body,
         ]);
-        return $this->find_by_id($data->id); 
+        return $this->findById($data->id); 
     }
-    public function update_post_type($data){
+    public function updatePostType($data){
         DB::table('posts')->where('id', $data->id)->update([
             'post_type_id'=>$data->post_type,
         ]);
-        return $this->find_by_id($data->id);
+        return $this->findById($data->id);
     }
-    public function update_post_title_and_body($data){
+    public function updatePostTitleAndBody($data){
         DB::table('posts')->where('id', $data->id)->update([
             'title'=>$data->title,
             'body'=>$data->body,
         ]);
-        return $this->find_by_id($data->id);
+        return $this->findById($data->id);
     }
-    public function find_user_posts_by_user_id($user_id){
+    public function findUserPostsByUserId($user_id){
         return DB::table('posts')->where(['owner_id'=> $user_id])->get();
     }
-    public function find_post_number_of_answers($post_id){
+    public function findPostNumberOfAnswers($post_id){
         return DB::table('posts')->where(['id'=>$post_id])->get()->first()->answers;
     }
-    public function find_post_number_of_comments($post_id){
+    public function findPostNumberOfComments($post_id){
         return DB::table('posts')->where(['id'=>$post_id])->get()->first()->comments;
     }
-    public function find_post_number_of_tags($post_id){
+    public function findPostNumberOfTags($post_id){
         return DB::table('posts')->where(['id'=>$post_id])->get()->first()->tags;
     }
-    public function find_post_number_of_views($post_id){
+    public function findPostNumberOfViews($post_id){
         return DB::table('posts')->where(['id'=>$post_id])->get()->first()->views;
     }
-    public function find_post_number_of_followers($post_id){
+    public function findPostNumberOfFollowers($post_id){
         return DB::table('posts')->where(['id'=>$post_id])->get()->first()->followers;
     }
-    public function increace_post_views_number($post_id){
-        $views = $this->find_post_number_of_views($post_id);
+    public function increacePostViewsNumber($post_id){
+        $views = $this->findPostNumberOfViews($post_id);
         DB::table('posts')->where(['id'=>$post_id])->update([
             'views'=>$views += 1 
         ]);
         return $views += 1;
     }
 
-    public function increace_post_answer_number($post_id){
-        $answers = $this->find_post_number_of_answers($post_id);
+    public function increacePostAnswerNumber($post_id){
+        $answers = $this->findPostNumberOfAnswers($post_id);
         DB::table('posts')->where(['id'=>$post_id])->update([
             'answers'=>$answers += 1 
         ]);
         return $answers += 1;
     }
-    public function increace_post_tags_number($post_id){
-        $tags = $this->find_post_number_of_tags($post_id);
+    public function increacePostTagsNumber($post_id){
+        $tags = $this->findPostNumberOfTags($post_id);
         DB::table('posts')->where(['id'=>$post_id])->update([
             'tags'=>$tags += 1 
         ]);
         return $tags += 1;
     }
-    public function increace_post_comments_number($post_id){
-        $comments = $this->find_post_number_of_comments($post_id);
+    public function increacePostCommentsNumber($post_id){
+        $comments = $this->findPostNumberOfComments($post_id);
         DB::table('posts')->where(['id'=>$post_id])->update([
             'comments'=>$comments += 1 
         ]);
         return $comments += 1;
     }
-    public function increace_post_followers_number($post_id){
-        $followers = $this->find_post_number_of_followers($post_id);
+    public function increacePostFollowersNumber($post_id){
+        $followers = $this->findPostNumberOfFollowers($post_id);
         DB::table('posts')->where(['id'=>$post_id])->update([
             'followers'=>$followers += 1 
         ]);
         return $followers += 1;
     }
 
-    public function is_owner($post_id, $user_id){
+    public function isOwner($post_id, $user_id){
         return DB::table('posts')->where([
             'id'=>$post_id,
             'owner_id'=> $user_id

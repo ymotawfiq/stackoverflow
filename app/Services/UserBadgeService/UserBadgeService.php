@@ -18,15 +18,15 @@ class UserBadgeService implements UserBadgeServiceInterface
     /**
      * Create a new class instance.
      */
-    private UserBadgeRepositoryInterface $_user_badge_repository;
-    private BadgeRepositoryInterface $_badge_repository_interface;
-    public function __construct(UserBadgeRepositoryInterface $_user_badge_repository, 
-    BadgeRepositoryInterface $_badge_repository_interface)
+    private UserBadgeRepositoryInterface $_userBadgeRepository;
+    private BadgeRepositoryInterface $_badgeRepository;
+    public function __construct(UserBadgeRepositoryInterface $_userBadgeRepository, 
+    BadgeRepositoryInterface $_badgeRepository)
     {
-        $this->_user_badge_repository = $_user_badge_repository;
-        $this->_badge_repository_interface = $_badge_repository_interface;
+        $this->_userBadgeRepository = $_userBadgeRepository;
+        $this->_badgeRepository = $_badgeRepository;
     }
-    public function add_badge_to_user(Request $request){
+    public function addBadgeToUser(Request $request){
         $validator = $this->validate_user_badge($request);
         if(!$validator['is_success']){
             return response()->json(
@@ -36,12 +36,12 @@ class UserBadgeService implements UserBadgeServiceInterface
         if(!$this->check_if_input_exists($request)->getData()->is_success){
             return $this->check_if_input_exists($request);
         }
-        $user_badge = $this->_user_badge_repository->is_user_has_badge([
+        $user_badge = $this->_userBadgeRepository->isUserHasBadge([
             'user_id'=> $request->user_id,
             'badge_id'=> $request->badge_id
         ]);
         if($user_badge==null){
-            $new_user_badge = $this->_user_badge_repository->create([
+            $new_user_badge = $this->_userBadgeRepository->create([
                 'user_id'=> $request->user_id,
                 'badge_id'=> $request->badge_id
             ]);
@@ -53,7 +53,7 @@ class UserBadgeService implements UserBadgeServiceInterface
             Response::_403_forbidden_('user already has this badge')
         );
     }
-    public function remove_badge_from_user(Request $request){
+    public function removeBadgeFromUser(Request $request){
         $validator = $this->validate_user_badge($request);
         if(!$validator['is_success']){
             return response()->json(
@@ -63,12 +63,12 @@ class UserBadgeService implements UserBadgeServiceInterface
         if(!$this->check_if_input_exists($request)->getData()->is_success){
             return $this->check_if_input_exists($request);
         }
-        $user_badge = $this->_user_badge_repository->is_user_has_badge([
+        $user_badge = $this->_userBadgeRepository->isUserHasBadge([
             'user_id'=> $request->user_id,
             'badge_id'=> $request->badge_id
         ]);
         if($user_badge!=null){
-            $this->_user_badge_repository->remove_badge_from_user([
+            $this->_userBadgeRepository->removeBadgeFromUser([
                 'user_id'=> $request->user_id,
                 'badge_id'=> $request->badge_id
             ]);
@@ -80,7 +80,7 @@ class UserBadgeService implements UserBadgeServiceInterface
             Response::_404_not_found_('user badge not found')
         );
     }
-    public function is_user_has_badge(Request $request){
+    public function isUserHasBadge(Request $request){
         $validator = $this->validate_user_badge($request);
         if(!$validator['is_success']){
             return response()->json(
@@ -90,7 +90,7 @@ class UserBadgeService implements UserBadgeServiceInterface
         if(!$this->check_if_input_exists($request)->getData()->is_success){
             return $this->check_if_input_exists($request);
         }
-        $user_badge = $this->_user_badge_repository->is_user_has_badge([
+        $user_badge = $this->_userBadgeRepository->isUserHasBadge([
             'user_id'=> $request->user_id,
             'badge_id'=> $request->badge_id
         ]);
@@ -103,14 +103,14 @@ class UserBadgeService implements UserBadgeServiceInterface
             Response::_404_not_found_('user badge not found')
         );
     }
-    public function get_user_badges($user_id){
+    public function getUserBadges($user_id){
         $user = User::where(['id'=> $user_id])->get()->first();
         if($user==null){
             return response()->json(
                 Response::_404_not_found_('user not found')
             );
         }
-        $user_badges = $this->_user_badge_repository->get_user_badges($user_id);
+        $user_badges = $this->_userBadgeRepository->getUserBadges($user_id);
         if($user_badges->count()==0 || empty($user_badges) || $user_badges==null){
             return response()->json(
                 Response::_204_no_content_('user has no badges')
@@ -137,7 +137,7 @@ class UserBadgeService implements UserBadgeServiceInterface
                 Response::_404_not_found_('user not found')
             );
         }
-        $badge = $this->_badge_repository_interface->find_by_id($request->badge_id);
+        $badge = $this->_badgeRepository->findById($request->badge_id);
         if($badge==null){
             return response()->json(
                 Response::_404_not_found_('badge not found')

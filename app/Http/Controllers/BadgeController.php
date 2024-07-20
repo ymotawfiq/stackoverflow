@@ -4,28 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\ResponseModel\Response;
 use App\Models\User;
-use App\Services\auth_service\roles_service\roles_service_interface;
-use App\Services\BadgeService\badge_service_interface;
+use App\Services\AuthService\RolesService\RolesServiceInterface;
+use App\Services\BadgeService\BadgeServiceInterface;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class BadgeController extends Controller
 {
-    private badge_service_interface $_badge_service_interface;
-    private roles_service_interface $_roles_service_interface;
-    public function __construct(badge_service_interface $_badge_service_interface, 
-    roles_service_interface $_roles_service_interface){
-        $this->_badge_service_interface = $_badge_service_interface;
-        $this->_roles_service_interface = $_roles_service_interface;
+    private BadgeServiceInterface $_badgeService;
+    private RolesServiceInterface $_rolesService;
+    public function __construct(BadgeServiceInterface $_badgeService, 
+    RolesServiceInterface $_rolesService){
+        $this->_badgeService = $_badgeService;
+        $this->_rolesService = $_rolesService;
     }
 
     public function create(Request $request){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                if($this->_roles_service_interface->is_user_in_role($user, 'ADMIN')){
-                    return $this->_badge_service_interface->create($request);
+                if($this->_rolesService->isUserInRole($user, 'ADMIN')){
+                    return $this->_badgeService->create($request);
                 }
                 return response()->json(Response::_403_forbidden_());
             }
@@ -42,8 +42,8 @@ class BadgeController extends Controller
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                if($this->_roles_service_interface->is_user_in_role($user, 'ADMIN')){
-                    return $this->_badge_service_interface->update($request);
+                if($this->_rolesService->isUserInRole($user, 'ADMIN')){
+                    return $this->_badgeService->update($request);
                 }
                 return response()->json(Response::_403_forbidden_());
             }
@@ -56,12 +56,12 @@ class BadgeController extends Controller
         }
     }
 
-    public function delete_by_id($id){
+    public function deleteById($id){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                if($this->_roles_service_interface->is_user_in_role($user, 'ADMIN')){
-                    return $this->_badge_service_interface->delete_by_id($id);
+                if($this->_rolesService->isUserInRole($user, 'ADMIN')){
+                    return $this->_badgeService->deleteById($id);
                 }
                 return response()->json(Response::_403_forbidden_());
             }
@@ -74,9 +74,9 @@ class BadgeController extends Controller
         }
     }
 
-    public function find_by_id($id){
+    public function findById($id){
         try{
-            return $this->_badge_service_interface->find_by_id($id);
+            return $this->_badgeService->findById($id);
         }
         catch(Exception $e){
             return response()->json(
@@ -87,7 +87,7 @@ class BadgeController extends Controller
 
     public function all(){
         try{
-            return $this->_badge_service_interface->all();
+            return $this->_badgeService->all();
         }
         catch(Exception $e){
             return response()->json(

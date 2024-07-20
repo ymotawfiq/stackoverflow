@@ -10,19 +10,19 @@ use Illuminate\Http\Request;
 
 class TagsController extends Controller
 {
-    private TagsServiceInterface $_tagsServiceInterface;
-    private RolesServiceInterface $_rolesServiceInterface;
-    public function __construct(TagsServiceInterface $_tagsServiceInterface, 
-    RolesServiceInterface $_rolesServiceInterface){
-        $this->_tagsServiceInterface = $_tagsServiceInterface;
-        $this->_rolesServiceInterface = $_rolesServiceInterface;
+    private TagsServiceInterface $_tagsService;
+    private RolesServiceInterface $_rolesService;
+    public function __construct(TagsServiceInterface $_tagsService, 
+    RolesServiceInterface $_rolesService){
+        $this->_tagsService = $_tagsService;
+        $this->_rolesService = $_rolesService;
     }
     public function create(Request $request){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                if($this->_rolesServiceInterface->is_user_in_role($user, 'ADMIN')){
-                    return $this->_tagsServiceInterface->create($request);
+                if($this->_rolesService->isUserInRole($user, 'ADMIN')){
+                    return $this->_tagsService->create($request);
                 }
                 return response()->json(
                     Response::_403_forbidden_()
@@ -43,8 +43,8 @@ class TagsController extends Controller
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                if($this->_rolesServiceInterface->is_user_in_role($user, 'ADMIN')){
-                    return $this->_tagsServiceInterface->update($request);
+                if($this->_rolesService->isUserInRole($user, 'ADMIN')){
+                    return $this->_tagsService->update($request);
                 }
                 return response()->json(
                     Response::_403_forbidden_()
@@ -61,12 +61,12 @@ class TagsController extends Controller
         }
     }
 
-    public function delete_by_id($tag_id){
+    public function deleteById($tag_id){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                if($this->_rolesServiceInterface->is_user_in_role($user, 'ADMIN')){
-                    return $this->_tagsServiceInterface->delete_by_id($tag_id);
+                if($this->_rolesService->isUserInRole($user, 'ADMIN')){
+                    return $this->_tagsService->deleteById($tag_id);
                 }
                 return response()->json(
                     Response::_403_forbidden_()
@@ -83,9 +83,9 @@ class TagsController extends Controller
         }
     }
 
-    public function find_by_id($tag_id){
+    public function findById($tag_id){
         try{
-            return $this->_tagsServiceInterface->find_by_id($tag_id);
+            return $this->_tagsService->findById($tag_id);
         }
         catch(\Exception $e){
             return response()->json(
@@ -96,7 +96,7 @@ class TagsController extends Controller
 
     public function all(){
         try{
-            return $this->_tagsServiceInterface->all();
+            return $this->_tagsService->all();
         }
         catch(\Exception $e){
             return response()->json(

@@ -10,15 +10,15 @@ use Illuminate\Http\Request;
 
 class PostsListsController extends Controller
 {
-    private PostListServiceInterface $_postListServiceInterface;
-    public function __construct(PostListServiceInterface $_postListServiceInterface){
-        $this->_postListServiceInterface = $_postListServiceInterface;  
+    private PostListServiceInterface $_postListService;
+    public function __construct(PostListServiceInterface $_postListService){
+        $this->_postListService = $_postListService;  
     }
     public function create(Request $request){
         try{
             $user = User::where("id", auth()->id())->get()->first();
             if($user!=null){
-                return $this->_postListServiceInterface->create($request, $user);
+                return $this->_postListService->create($request, $user);
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -35,7 +35,7 @@ class PostsListsController extends Controller
         try{
             $user = User::where("id", auth()->id())->get()->first();
             if($user!=null){
-                return $this->_postListServiceInterface->update($request, $user);
+                return $this->_postListService->update($request, $user);
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -48,11 +48,11 @@ class PostsListsController extends Controller
         }
     }
 
-    public function find_by_id($list_id){
+    public function findById($list_id){
         try{
             $user = User::where("id", auth()->id())->get()->first();
             if($user!=null){
-                return $this->_postListServiceInterface->find_by_id($list_id, $user);
+                return $this->_postListService->findById($list_id, $user);
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -65,11 +65,11 @@ class PostsListsController extends Controller
         }
     }
 
-    public function delete_by_id($list_id){
+    public function deleteById($list_id){
         try{
             $user = User::where("id", auth()->id())->get()->first();
             if($user!=null){
-                return $this->_postListServiceInterface->delete_by_id($list_id, $user);
+                return $this->_postListService->deleteById($list_id, $user);
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -82,11 +82,11 @@ class PostsListsController extends Controller
         }
     }
 
-    public function user_lists(){
+    public function userLists(){
         try{
             $user = User::where("id", auth()->id())->get()->first();
             if($user!=null){
-                return $this->_postListServiceInterface->user_lists($user);
+                return $this->_postListService->userLists($user);
             }
             return response()->json(
                 Response::_401_un_authorized_()

@@ -25,107 +25,107 @@ Route::get('/user', function (Request $request) {
 
 Route::group(['prefix'=>'user', 'middleware' => 'api'], function(){
     Route::post('register', [RegisterAndUserController::class, 'register']);
-    Route::post('email-login', [LoginLogoutController::class, 'login_by_email']);
-    Route::post('username-login', [LoginLogoutController::class, 'login_by_user_name']);
-    Route::post('multi-login', [LoginLogoutController::class, 'login_by_id_user_name_or_email']);
+    Route::post('email-login', [LoginLogoutController::class, 'loginByEmail']);
+    Route::post('username-login', [LoginLogoutController::class, 'loginByUserName']);
+    Route::post('multi-login', [LoginLogoutController::class, 'loginByIdOrUserNameOrEmail']);
     Route::post('logout', [LoginLogoutController::class, 'logout']);
-    Route::post('get-user', [RegisterAndUserController::class, 'get_user']);
-    Route::get('current-user', [RegisterAndUserController::class, 'get_current_user']);
-    Route::put('update-account', [AccountController::class, 'update_account']);
-    Route::put('update-displayname', [AccountController::class, 'update_display_name']);
-    Route::put('update-username', [AccountController::class, 'update_user_name']);
+    Route::post('get-user', [RegisterAndUserController::class, 'getUser']);
+    Route::get('current-user', [RegisterAndUserController::class, 'getCurrentUser']);
+    Route::put('update-account', [AccountController::class, 'updateAccount']);
+    Route::put('update-displayname', [AccountController::class, 'updateDisplayName']);
+    Route::put('update-username', [AccountController::class, 'updateUserName']);
     Route::get('verify-email/{id}', [EmailController::class, 'verify'])->name('verification.verify'); 
     Route::post('resend-email', [EmailController::class, 'resend'])->name('verification.resend');
-    Route::post('enable-2fa', [TwoFactorAuthenticatonController::class, 'enable_two_factor_authentication']);
-    Route::post('un-enable-2fa', [TwoFactorAuthenticatonController::class, 'un_enable_two_factor_authentication']);
-    Route::post('login-2fa', [LoginLogoutController::class, 'login_with_2fa']);
-    Route::post('forgetpassword', [ForgetResetPasswordController::class, 'forget_password']);
-    Route::post('forget-password-by-email', [ForgetResetPasswordController::class, 'forget_password_by_email']);
-    Route::post('reset-password', [ForgetResetPasswordController::class, 'reset_password']);
+    Route::post('enable-2fa', [TwoFactorAuthenticatonController::class, 'enable2FA']);
+    Route::post('un-enable-2fa', [TwoFactorAuthenticatonController::class, 'diable2FA']);
+    Route::post('login-2fa', [LoginLogoutController::class, 'loginWith2fa']);
+    Route::post('forgetpassword', [ForgetResetPasswordController::class, 'forgetPassword']);
+    Route::post('forget-password-by-email', [ForgetResetPasswordController::class, 'forgetPasswordByEmail']);
+    Route::post('reset-password', [ForgetResetPasswordController::class, 'resetPassword']);
 });
 
 Route::group(['prefix'=> 'badge'], function () {
     Route::post('', [BadgeController::class,'create']);
     Route::put('', [BadgeController::class,'update']);
-    Route::get('{id}', [BadgeController::class,'find_by_id']);
-    Route::delete('{id}', [BadgeController::class,'delete_by_id']);
+    Route::get('{id}', [BadgeController::class,'findById']);
+    Route::delete('{id}', [BadgeController::class,'deleteById']);
     Route::get('', [BadgeController::class,'all']);
 });
 
 Route::group(['prefix'=> 'user-badge'], function () {
-    Route::post('add-badge-to-user', [UserBadgesController::class,'add_badge_to_user']);
-    Route::post('get-user-badge', [UserBadgesController::class,'is_user_has_badge']);
-    Route::post('delete-user-badge', [UserBadgesController::class,'remove_badge_from_user']);
-    Route::get('user-padges/{user_id}', [UserBadgesController::class,'get_user_badges']);
+    Route::post('add-badge-to-user', [UserBadgesController::class,'addBadgeToUser']);
+    Route::post('get-user-badge', [UserBadgesController::class,'isUserHasBadge']);
+    Route::post('delete-user-badge', [UserBadgesController::class,'removeBadgeFromUser']);
+    Route::get('{user_id}', [UserBadgesController::class,'getUserBadges']);
 });
 
 Route::group(['prefix'=> 'vote-type'], function () {
-    Route::post('', [VoteTypeController::class,'add_vote_type']);
-    Route::put('', [VoteTypeController::class,'update_vote_type']);
-    Route::get('{id}', [VoteTypeController::class,'find_vote_type_by_id']);
+    Route::post('', [VoteTypeController::class,'addVoteType']);
+    Route::put('', [VoteTypeController::class,'updateVoteType']);
+    Route::get('{id}', [VoteTypeController::class,'findById']);
     Route::get('', [VoteTypeController::class,'all']);
-    Route::delete('{id}', [VoteTypeController::class,'delete_vote_type_by_id']);
+    Route::delete('{id}', [VoteTypeController::class,'deleteById']);
 });
 
 Route::group(['prefix'=> 'post-types'], function () {
-    Route::post('', [PostTypesController::class,'add_post_type']);
-    Route::put('', [PostTypesController::class,'update_post_type']);
-    Route::get('{id}', [PostTypesController::class,'find_post_type_by_id']);
+    Route::post('', [PostTypesController::class,'addPostType']);
+    Route::put('', [PostTypesController::class,'updatePostType']);
+    Route::get('{id}', [PostTypesController::class,'findById']);
     Route::get('', [PostTypesController::class,'all']);
-    Route::delete('{id}', [PostTypesController::class,'delete_post_type_by_id']);
+    Route::delete('{id}', [PostTypesController::class,'deleteById']);
 });
 
 Route::group(['prefix'=> 'post'], function () {
-    Route::post('', [PostController::class,'add_post']);
-    Route::put('update-post', [PostController::class,'update_post']);
-    Route::put('update-post-title', [PostController::class,'update_post_title']);
-    Route::put('update-post-body', [PostController::class,'update_post_body']);
-    Route::put('update-post-type', [PostController::class,'update_post_type']);
-    Route::put('update-post-tile-body', [PostController::class,'update_post_title_body']);
-    Route::get('{id}', [PostController::class,'find_post_by_id']);
-    Route::delete('{id}', [PostController::class,'delete_post_by_id']);
-    Route::get('', [PostController::class,'all_posts']);
-    Route::get('user/{id_user_name_email}', [PostController::class,'user_posts']);
+    Route::post('', [PostController::class,'addPost']);
+    Route::put('update-post', [PostController::class,'updatePost']);
+    Route::put('update-post-title', [PostController::class,'updatePostTitle']);
+    Route::put('update-post-body', [PostController::class,'updatePostBody']);
+    Route::put('update-post-type', [PostController::class,'updatePostType']);
+    Route::put('update-post-tile-body', [PostController::class,'updatePostTitleAndBody']);
+    Route::get('{id}', [PostController::class,'findPostById']);
+    Route::delete('{id}', [PostController::class,'deletePostById']);
+    Route::get('', [PostController::class,'allPosts']);
+    Route::get('user/{id_user_name_email}', [PostController::class,'userPosts']);
     //
-    Route::post('follow/{post_id}', [FollowPostController::class,'follow_post']);
-    Route::delete('unfollow/{post_id}', [FollowPostController::class,'un_follow_post']);
-    Route::get('is-followed/{post_id}', [FollowPostController::class,'is_user_following_post']);
+    Route::post('follow/{post_id}', [FollowPostController::class,'followPost']);
+    Route::delete('unfollow/{post_id}', [FollowPostController::class,'unFollowPost']);
+    Route::get('is-followed/{post_id}', [FollowPostController::class,'isUserFollowingPost']);
 });
 
 
 Route::group(['prefix'=> 'follow-post'], function () {
-    Route::get('', [FollowPostController::class,'find_user_following_posts']);
-    Route::get('post/{id}', [FollowPostController::class,'find_post_following_users']);
+    Route::get('', [FollowPostController::class,'findUserFollowingPosts']);
+    Route::get('post/{id}', [FollowPostController::class,'findPostFollowingUsers']);
 });
 
 Route::group(['prefix'=> 'posts-lists'], function () {
     Route::post('', [PostsListsController::class,'create']);
     Route::put('', [PostsListsController::class,'update']);
-    Route::get('{id}', [PostsListsController::class,'find_by_id']);
-    Route::delete('{id}', [PostsListsController::class,'delete_by_id']);
-    Route::get('', [PostsListsController::class,'user_lists']);
+    Route::get('{id}', [PostsListsController::class,'findById']);
+    Route::delete('{id}', [PostsListsController::class,'deleteById']);
+    Route::get('', [PostsListsController::class,'userLists']);
 });
 
 Route::group(['prefix'=> 'saved-posts'], function () {
-    Route::post('', [SavePostController::class,'save_post']);
-    Route::get('{id}', [SavePostController::class,'find_saved_post_by_id']);
-    Route::delete('{id}', [SavePostController::class,'us_save_post']);
-    Route::get('', [SavePostController::class,'find_user_saved_posts']);
-    Route::get('list/{id}', [SavePostController::class,'find_user_saved_posts_by_list_id']);
+    Route::post('', [SavePostController::class,'savePost']);
+    Route::get('{id}', [SavePostController::class,'findSavedPostById']);
+    Route::delete('{id}', [SavePostController::class,'unSavePost']);
+    Route::get('', [SavePostController::class,'findUserSavedPosts']);
+    Route::get('list/{id}', [SavePostController::class,'findUserSavedPostsByListId']);
 });
 
 Route::group(['prefix'=> 'tags'], function () {
     Route::post('', [TagsController::class,'create']);
     Route::put('', [TagsController::class,'update']);
-    Route::get('{id}', [TagsController::class,'find_by_id']);
-    Route::delete('{id}', [TagsController::class,'delete_by_id']);
+    Route::get('{id}', [TagsController::class,'findById']);
+    Route::delete('{id}', [TagsController::class,'deleteById']);
     Route::get('', [TagsController::class,'all']);
 });
 
-Route::group(['prefix'=> 'history-types'], function () {
+Route::group(['prefix'=> 'post-history-types'], function () {
     Route::post('', [PostHistoryTypesController::class,'create']);
     Route::put('', [PostHistoryTypesController::class,'update']);
-    Route::get('{id}', [PostHistoryTypesController::class,'find_by_id']);
-    Route::delete('{id}', [PostHistoryTypesController::class,'delete_by_id']);
+    Route::get('{id}', [PostHistoryTypesController::class,'findById']);
+    Route::delete('{id}', [PostHistoryTypesController::class,'deleteById']);
     Route::get('', [PostHistoryTypesController::class,'all']);
 });

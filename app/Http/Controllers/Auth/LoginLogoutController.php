@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\ResponseModel\Response;
 use App\Models\User;
-use App\Services\auth_service\login_logout_service\login_logout_service_interface;
-use App\Services\auth_service\token_service\token_service_interface;
 use App\Services\AuthService\LoginLogoutService\LoginLogoutServiceInterface;
 use App\Services\AuthService\TokenService\TokenServiceInterface;
 use Exception;
@@ -15,18 +13,17 @@ use Illuminate\Support\Facades\Validator;
 
 class LoginLogoutController extends Controller
 {
-    private LoginLogoutServiceInterface $_login_logout_service_interface;
-    private TokenServiceInterface $_token_service_interface;
+    private LoginLogoutServiceInterface $_loginLogoutService;
+    private TokenServiceInterface $_tokenService;
 
     public function __construct(LoginLogoutServiceInterface $_login_logout_service,
-    TokenServiceInterface $_token_service_interface){
-        $this->_login_logout_service_interface = $_login_logout_service;
-        $this->_token_service_interface = $_token_service_interface;
+    TokenServiceInterface $_tokenService){
+        $this->_loginLogoutService = $_login_logout_service;
+        $this->_tokenService = $_tokenService;
     }
-    public function login_by_email(Request $request){
+    public function loginByEmail(Request $request){
         try{
-            $response = $this->_login_logout_service_interface
-            ->login_by_email($request);
+            $response = $this->_loginLogoutService->loginByEmail($request);
             return $response;
         }
         catch(Exception $e){
@@ -36,10 +33,9 @@ class LoginLogoutController extends Controller
         }
     }
 
-    public function login_by_user_name(Request $request){
+    public function loginByUserName(Request $request){
         try{
-            $response = $this->_login_logout_service_interface
-            ->login_by_user_name($request);
+            $response = $this->_loginLogoutService->loginByUserName($request);
             return $response;
         }
         catch(Exception $e){
@@ -48,10 +44,10 @@ class LoginLogoutController extends Controller
             );   
         }
     }
-    public function login_by_id_user_name_or_email(Request $request){
+    public function loginByIdOrUserNameOrEmail(Request $request){
         try{
-            $response = $this->_login_logout_service_interface
-            ->login_by_id_or_userName_or_email($request);
+            $response = $this->_loginLogoutService
+                ->loginByIdOrUserNameOrEmail($request);
             return $response;
         }
         catch(Exception $e){
@@ -62,10 +58,10 @@ class LoginLogoutController extends Controller
     }
 
     public function logout(){
-        return $this->_login_logout_service_interface->logout();
+        return $this->_loginLogoutService->logout();
     }
 
-    public function login_with_2fa(Request $request){
+    public function loginWith2fa(Request $request){
         try{
             $validator = $this->validate_two_factor_login($request);
             if(!$validator['is_success']){
@@ -84,11 +80,11 @@ class LoginLogoutController extends Controller
             }
             if($user->two_factor_code === $request->code){
                 if(now()<$user->two_factor_expires_at){
-                    $this->_login_logout_service_interface->reset_2fa_code($user);
+                    $this->_loginLogoutService->reset2FACode($user);
                     return response()->json(
                         Response::_200_success_('token generated successfully', [
-                            'token'=>$this->_token_service_interface
-                                ->generate_token($user)->getData()->data->token,
+                            'token'=>$this->_tokenService
+                                ->generateToken($user)->getData()->data->token,
                             'type'=>'bearer token'
                         ])
                     );

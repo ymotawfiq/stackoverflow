@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 
 interface VoteTypeServiceInterface
 {
-    public function add_vote_type(Request $request);
-    public function update_vote_type(Request $request);
-    public function delete_by_id($id);
-    public function find_by_id($id);
-    public function all_vote_types();
+    public function addVoteType(Request $request);
+    public function updateVoteType(Request $request);
+    public function deleteById($id);
+    public function findById($id);
+    public function allVoteTypes();
 }

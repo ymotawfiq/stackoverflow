@@ -15,12 +15,12 @@ use Ramsey\Uuid\Uuid;
 
 class LoginLogoutService implements LoginLogoutServiceInterface
 {
-    private TokenServiceInterface $_token_service_interface;
-    public function __construct(TokenServiceInterface $_token_service_interface){
-        $this->_token_service_interface = $_token_service_interface;
+    private TokenServiceInterface $_tokenService;
+    public function __construct(TokenServiceInterface $_tokenService){
+        $this->_tokenService = $_tokenService;
     }
     
-    public  function login_by_email(Request $request) : JsonResponse{
+    public  function loginByEmail(Request $request) : JsonResponse{
         $validator = $this->validate_login_by_email_request($request);
         if(!$validator['is_success']){
             return response()->json($validator);
@@ -33,8 +33,8 @@ class LoginLogoutService implements LoginLogoutServiceInterface
             );
         }
         if($user->is_two_factor_enabled){
-            if($this->_token_service_interface
-                ->generate_token_non_2fa_user($user, $request)->getData()->is_success){
+            if($this->_tokenService
+                ->generateTokenForNon2FAUser($user, $request)->getData()->is_success){
                 $this->generate_and_send_two_factor_code($user);
                 return response()->json(
                     Response::_200_success_('two factor code sent to your email')
@@ -44,9 +44,9 @@ class LoginLogoutService implements LoginLogoutServiceInterface
                 Response::_400_bad_request_('invalid username or password')
             );
         }
-        return $this->_token_service_interface->generate_token_non_2fa_user($user, $request); 
+        return $this->_tokenService->generateTokenForNon2FAUser($user, $request); 
     }
-    public  function login_by_user_name(Request $request) : JsonResponse{
+    public  function loginByUserName(Request $request) : JsonResponse{
         $validator = $this->validate_login_by_user_name_request($request);
         if(!$validator['is_success']){
             return response()->json($validator);
@@ -59,7 +59,7 @@ class LoginLogoutService implements LoginLogoutServiceInterface
             );
         }
         if($user->is_two_factor_enabled){
-            if($this->_token_service_interface->generate_token_non_2fa_user($user, $request)
+            if($this->_tokenService->generateTokenForNon2FAUser($user, $request)
                 ->getData()->is_success){
                     $this->generate_and_send_two_factor_code($user);
                     return response()->json(
@@ -70,9 +70,9 @@ class LoginLogoutService implements LoginLogoutServiceInterface
                 Response::_400_bad_request_('invalid username or password')
             );
         }
-        return $this->_token_service_interface->generate_token_non_2fa_user($user, $request);  
+        return $this->_tokenService->generateTokenForNon2FAUser($user, $request);  
     }
-    public  function login_by_id_or_userName_or_email(Request $request) : JsonResponse{
+    public  function loginByIdOrUserNameOrEmail(Request $request) : JsonResponse{
         $validator = $this->validate_login_by_id_or_userName_or_email($request);
         if(!$validator['is_success']){
             return response()->json($validator);
@@ -85,7 +85,7 @@ class LoginLogoutService implements LoginLogoutServiceInterface
             );
         }
         if($user->is_two_factor_enabled){
-            if($this->_token_service_interface->generate_token_non_2fa_user($user, $request)
+            if($this->_tokenService->generateTokenForNon2FAUser($user, $request)
                 ->getData()->is_success){
                     $this->generate_and_send_two_factor_code($user);
                     return response()->json([
@@ -96,7 +96,7 @@ class LoginLogoutService implements LoginLogoutServiceInterface
                 Response::_400_bad_request_('invalid username or password')
             );
         }
-        return $this->_token_service_interface->generate_token_non_2fa_user($user, $request);
+        return $this->_tokenService->generateTokenForNon2FAUser($user, $request);
     }
     public function logout() : JsonResponse{
         auth()->logout();
@@ -105,7 +105,7 @@ class LoginLogoutService implements LoginLogoutServiceInterface
         );
     }
 
-    public function reset_2fa_code($user){
+    public function reset2FACode($user){
         DB::table('users')->where('id', $user->id)->update([
             'two_factor_expires_at'=>null,
             'two_factor_code'=>null
@@ -149,7 +149,7 @@ class LoginLogoutService implements LoginLogoutServiceInterface
     }
 
     private function generate_and_send_two_factor_code($user){
-        $this->reset_2fa_code($user);
+        $this->reset2FACode($user);
         $code = Uuid::uuid4()->toString(); 
         DB::table('users')->where('id', $user->id)->update([
             'two_factor_expires_at'=>now()->addMinutes(10),

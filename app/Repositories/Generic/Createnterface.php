@@ -2,8 +2,7 @@
 
 namespace App\Repositories\Generic;
 
-interface AddGetAllInterface
+interface CreateInterface
 {
     public function create($data);
-    public function all();
 }

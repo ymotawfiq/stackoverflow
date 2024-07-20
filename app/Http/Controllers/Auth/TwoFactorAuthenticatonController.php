@@ -11,15 +11,15 @@ use Illuminate\Http\Request;
 
 class TwoFactorAuthenticatonController extends Controller
 {
-    private TwoFactorAuthenticationServiceInterface $_twofactor_authentication_service_interface;
-    public function __construct(TwoFactorAuthenticationServiceInterface $_twofactor_authentication_service_interface){
-        $this->_twofactor_authentication_service_interface = $_twofactor_authentication_service_interface;
+    private TwoFactorAuthenticationServiceInterface $_2FAService;
+    public function __construct(TwoFactorAuthenticationServiceInterface $_2FAService){
+        $this->_2FAService = $_2FAService;
     }
-    public function enable_two_factor_authentication(){
+    public function enable2FA(){
         try{
             $user = auth()->user();
             if($user!=null){
-                return $this->_twofactor_authentication_service_interface
+                return $this->_2FAService
                     ->enable_two_factor_authentication($user);
             }
             return response()->json(
@@ -33,11 +33,11 @@ class TwoFactorAuthenticatonController extends Controller
         }
     }
 
-    public function un_enable_two_factor_authentication(){
+    public function diable2FA(){
         try{
             $user = auth()->user();
             if($user!=null){
-                return $this->_twofactor_authentication_service_interface
+                return $this->_2FAService
                     ->un_enable_two_factor_authentication($user);
             }
             return response()->json(

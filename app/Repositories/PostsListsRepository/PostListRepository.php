@@ -8,27 +8,27 @@ class PostListRepository implements PostListRepositoryInterface
 {
     public function create($data){
         DB::table('posts_lists')->insert($data);
-        return $this->find_by_id($data['id']);
+        return $this->findById($data['id']);
     }
     public function all(){
         return DB::table('posts_lists')->get();
     }
-    public function find_user_lists($user_id){
+    public function findUserLists($user_id){
         return DB::table('posts_lists')->where(['user_id'=>$user_id])->get();
     }
-    public function delete_by_id($id){
+    public function deleteById($id){
         DB::table('posts_lists')->where('id', $id)->delete();
     }
-    public function find_by_id($id){
+    public function findById($id){
         return DB::table('posts_lists')->where('id', $id)->get()->first();
     }
-    public function find_list_by_id_user_id($id, $user_id){
+    public function findListByIdUserId($id, $user_id){
         return DB::table('posts_lists')->where([
             'user_id'=>$user_id,
             'id'=>$id
         ])->get()->first();
     }
-    public function find_by_name($name, $user_id){
+    public function findByName($name, $user_id){
         return DB::table('posts_lists')->where([
             'user_id'=>$user_id,
             'name'=>strtolower($name)
@@ -38,6 +38,6 @@ class PostListRepository implements PostListRepositoryInterface
         DB::table('posts_lists')->where('id', $data->id)->update([
             'name'=>$data->name
         ]);
-        return $this->find_by_id($data->id);
+        return $this->findById($data->id);
     }
 }

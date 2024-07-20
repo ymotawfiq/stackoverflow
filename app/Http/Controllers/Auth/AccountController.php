@@ -10,15 +10,15 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    private AccountServiceInterface $_account_service_interface;
-    public function __construct(AccountServiceInterface $_account_service_interface){
-        $this->_account_service_interface = $_account_service_interface;
+    private AccountServiceInterface $_accountService;
+    public function __construct(AccountServiceInterface $_accountService){
+        $this->_accountService = $_accountService;
     }
-    public function update_account(Request $request){
+    public function updateAccount(Request $request){
         try{
             $user = auth()->user();
             if($user!=null){
-                return $this->_account_service_interface->update_account($request, $user);
+                return $this->_accountService->updateAccount($request, $user);
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -31,11 +31,11 @@ class AccountController extends Controller
         }
     }
 
-    public function update_display_name(Request $request){
+    public function updateDisplayName(Request $request){
         try{
             $user = auth()->user();
             if($user!=null){
-                return $this->_account_service_interface->update_display_name(
+                return $this->_accountService->updateDisplayName(
                     $request, $user);
             }
             return response()->json(
@@ -49,11 +49,11 @@ class AccountController extends Controller
         }
     }
 
-    public function update_user_name(Request $request){
+    public function updateUserName(Request $request){
         try{
             $user = auth()->user();
             if($user!=null){
-                return $this->_account_service_interface->update_user_name(
+                return $this->_accountService->updateUserName(
                     $request, $user);
             }
             return response()->json(

@@ -10,15 +10,15 @@ use Illuminate\Http\Request;
 
 class SavePostController extends Controller
 {
-    private SavePostServiceInterface $_savePostServiceInterface;
-    public function __construct(SavePostServiceInterface $_savePostServiceInterface){
-        $this->_savePostServiceInterface = $_savePostServiceInterface;
+    private SavePostServiceInterface $_savePostService;
+    public function __construct(SavePostServiceInterface $_savePostService){
+        $this->_savePostService = $_savePostService;
     }
-    public function save_post(Request $request){
+    public function savePost(Request $request){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_savePostServiceInterface->savePost($request, $user);
+                return $this->_savePostService->savePost($request, $user);
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -31,11 +31,11 @@ class SavePostController extends Controller
         }
     }
 
-    public function us_save_post($id){
+    public function unSavePost($id){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_savePostServiceInterface->unSavePost($id, $user);
+                return $this->_savePostService->unSavePost($id, $user);
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -47,28 +47,11 @@ class SavePostController extends Controller
             );
         }
     }
-    public function find_saved_post_by_id($id){
+    public function findSavedPostById($id){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_savePostServiceInterface->getUserSavedPostById($id, $user);
-            }
-            return response()->json(
-                Response::_401_un_authorized_()
-            );
-        }
-        catch(Exception $e){
-            return response()->json(
-                Response::_500_internel_server_error_($e->getMessage())
-            );
-        }
-    }
-
-    public function find_user_saved_posts(){
-        try{
-            $user = User::where(['id'=>auth()->id()])->get()->first();
-            if($user!=null){
-                return $this->_savePostServiceInterface->getUserSavedPosts($user);
+                return $this->_savePostService->getUserSavedPostById($id, $user);
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -81,11 +64,28 @@ class SavePostController extends Controller
         }
     }
 
-    public function find_user_saved_posts_by_list_id($list_id){
+    public function findUserSavedPosts(){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_savePostServiceInterface
+                return $this->_savePostService->getUserSavedPosts($user);
+            }
+            return response()->json(
+                Response::_401_un_authorized_()
+            );
+        }
+        catch(Exception $e){
+            return response()->json(
+                Response::_500_internel_server_error_($e->getMessage())
+            );
+        }
+    }
+
+    public function findUserSavedPostsByListId($list_id){
+        try{
+            $user = User::where(['id'=>auth()->id()])->get()->first();
+            if($user!=null){
+                return $this->_savePostService
                     ->getUserSavedPostsByListId($list_id, $user);
             }
             return response()->json(

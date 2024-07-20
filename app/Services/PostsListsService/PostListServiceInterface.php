@@ -9,7 +9,7 @@ interface PostListServiceInterface
 {
     public function create(Request $request, User $user);
     public function update(Request $request, User $user);
-    public function delete_by_id($list_id, User $user);
-    public function find_by_id($list_id, User $user);
-    public function user_lists(User $user);
+    public function deleteById($list_id, User $user);
+    public function findById($list_id, User $user);
+    public function userLists(User $user);
 }

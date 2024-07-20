@@ -16,7 +16,7 @@ use Ramsey\Uuid\Uuid;
 
 class ForgetResetPasswordService implements ForgetResetPasswordServiceInterface
 {
-    public function generate_and_send_reset_password_code($user) : JsonResponse{
+    public function generateAndSendResetPasswordCode($user) : JsonResponse{
         $code = Uuid::uuid4()->toString(); 
         $is_code_sent = DB::table('password_reset_tokens')
             ->where(['email'=>$user->email])->get()->first();
@@ -26,24 +26,24 @@ class ForgetResetPasswordService implements ForgetResetPasswordServiceInterface
                     Response::_400_bad_request_('code already sent check your inbox')
                 );
             }
-            $this->reset_password_code($user);
+            $this->resetPasswordCode($user);
             return $this->send_reset_password_code($user, $code);
         }
         return $this->send_reset_password_code($user,$code);
     }
 
-    public function generate_and_send_reset_password_code_by_email(Request $request) : JsonResponse{
+    public function generateAndSendResetPasswordCodeByEmail(Request $request) : JsonResponse{
         $validator = $this->validate_forget_password($request);
         if($validator['is_success']){
             $user = User::where('email',$request->email)->get()->first();
-            return $this->generate_and_send_reset_password_code($user);
+                return $this->generateAndSendResetPasswordCode($user);
         }
         return response()->json($validator);
     }
-    public function reset_password_code($user){
+    public function resetPasswordCode($user){
         DB::table('password_reset_tokens')->where(['email'=>$user->email])->delete();
     }
-    public function reset_password(Request $request) : JsonResponse{
+    public function resetPassword(Request $request) : JsonResponse{
         $validator = $this->validate_reset_password_request( $request );
         if(!$validator['is_success']){
             return response()->json($validator);
@@ -62,7 +62,7 @@ class ForgetResetPasswordService implements ForgetResetPasswordServiceInterface
                     User::where('id',$user->id)->update([
                         'password'=>Hash::make($request->password),
                     ]);
-                    $this->reset_password_code($user);
+                    $this->resetPasswordCode($user);
                     return response()->json(Response::_200_success_('password reset successfully'));
                 }
             }

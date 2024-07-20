@@ -10,12 +10,12 @@ interface PostServiceInterface
 {
     public function create(Request $request, User $user);
     public function update(Request $request, User $user);
-    public function find_by_id($post_id);
-    public function delete_by_id($post_id, User $user);
-    public function all_posts();
-    public function all_user_posts($user_id_user_name_email);
-    public function update_post_title(Request $request, User $user);
-    public function update_post_body(Request $request, User $user);
-    public function update_post_type(Request $request, User $user);
-    public function update_post_title_and_body(Request $request, User $user);
+    public function findById($post_id);
+    public function deleteById($post_id, User $user);
+    public function allPosts();
+    public function allUserPosts($user_id_user_name_email);
+    public function updatePostTitle(Request $request, User $user);
+    public function updatePostBody(Request $request, User $user);
+    public function updatePostType(Request $request, User $user);
+    public function updatePostTitleAndBody(Request $request, User $user);
 }

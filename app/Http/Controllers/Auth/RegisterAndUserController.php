@@ -11,14 +11,14 @@ use Illuminate\Http\Request;
 
 class RegisterAndUserController extends Controller
 {
-    private RegisterUserServiceInterface $_register_user_service_interface;
+    private RegisterUserServiceInterface $_registerUserService;
 
-    public function __construct(RegisterUserServiceInterface $_register_user_service_interface,){
-        $this->_register_user_service_interface = $_register_user_service_interface;
+    public function __construct(RegisterUserServiceInterface $_registerUserService,){
+        $this->_registerUserService = $_registerUserService;
     }
     public function register(Request $request){
         try{
-            return $this->_register_user_service_interface->register($request);
+            return $this->_registerUserService->register($request);
         }
         catch(Exception $e){
             return response()->json(
@@ -27,9 +27,9 @@ class RegisterAndUserController extends Controller
         }
     }
 
-    public function get_user(Request $request){
+    public function getUser(Request $request){
         try{
-            return $this->_register_user_service_interface->get_user($request);
+            return $this->_registerUserService->getUser($request);
         }
         catch(Exception $e){
             return response()->json(
@@ -38,9 +38,9 @@ class RegisterAndUserController extends Controller
         }
     }
 
-    public function get_current_user(){
+    public function getCurrentUser(){
         try{
-            return $this->_register_user_service_interface->get_current_user();
+            return $this->_registerUserService->getCurrentUser();
         }
         catch(Exception $e){
             return response()->json(

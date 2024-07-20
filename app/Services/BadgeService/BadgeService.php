@@ -4,7 +4,6 @@ namespace App\Services\BadgeService;
 
 use App\Classes\CheckValidation;
 use App\Models\ResponseModel\Response;
-use App\Repositories\BadgeRepository\badge_repository_interface;
 use App\Repositories\BadgeRepository\BadgeRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
@@ -12,10 +11,10 @@ use Ramsey\Uuid\Uuid;
 
 class BadgeService implements BadgeServiceInterface
 {
-    private BadgeRepositoryInterface $_badge_repository_interface;
-    public function __construct(BadgeRepositoryInterface $_badge_repository_interface)
+    private BadgeRepositoryInterface $_badgeRepository;
+    public function __construct(BadgeRepositoryInterface $_badgeRepository)
     {
-        $this->_badge_repository_interface = $_badge_repository_interface;
+        $this->_badgeRepository = $_badgeRepository;
     }
 
     public function create($request) : JsonResponse{
@@ -23,7 +22,7 @@ class BadgeService implements BadgeServiceInterface
         if(!$validator['is_success']){
             return response()->json(Response::_400_bad_request_('bad request', $validator));
         }
-        $new_badge = $this->_badge_repository_interface->create([
+        $new_badge = $this->_badgeRepository->create([
             'id'=>Uuid::uuid4()->toString(),
             'name'=> $request->name,
             'normalized_name'=>strtoupper($request->name)
@@ -35,23 +34,23 @@ class BadgeService implements BadgeServiceInterface
         if(!$validator['is_success']){
             return response()->json(Response::_400_bad_request_('bad request', $validator));
         }
-        $updated_badge = $this->_badge_repository_interface->update($request);
+        $updated_badge = $this->_badgeRepository->update($request);
         return response()->json(Response::_200_success_('badge updated successfully', $updated_badge));
     }
-    public function delete_by_id(string $id) : JsonResponse{
-        $badge = $this->_badge_repository_interface->find_by_id($id);
+    public function deleteById(string $id) : JsonResponse{
+        $badge = $this->_badgeRepository->findById($id);
         if($badge==null){
             return response()->json(
                 Response::_404_not_found_('badge not found')
             );
         }
-        $this->_badge_repository_interface->delete_by_id($id);
+        $this->_badgeRepository->deleteById($id);
         return response()->json(
             Response::_204_no_content_('badge deleted successfully')
         );
     }
-    public function find_by_id(string $id) : JsonResponse{
-        $badge = $this->_badge_repository_interface->find_by_id($id);
+    public function findById(string $id) : JsonResponse{
+        $badge = $this->_badgeRepository->findById($id);
         if($badge==null){
             return response()->json(
                 Response::_404_not_found_('badge not found')
@@ -62,7 +61,7 @@ class BadgeService implements BadgeServiceInterface
         );
     }
     public function all() : JsonResponse{
-        $badges = $this->_badge_repository_interface->all();
+        $badges = $this->_badgeRepository->all();
         if(empty($badges) || $badges==null || $badges->count()==0){
             return response()->json(
                 Response::_204_no_content_('no badges found')
@@ -76,8 +75,7 @@ class BadgeService implements BadgeServiceInterface
     private function validate_create($request) {
         $validator = Validator::make($request->all(), [
             'name'=>['required','unique:badges', function($attribute, $value, $fail){
-                $badge = $this->_badge_repository_interface
-                    ->find_by_normalized_name($value);
+                $badge = $this->_badgeRepository->findByNormalizedName($value);
                 if($badge!=null){
                     $fail('name badge already exist');
                 }
@@ -90,8 +88,7 @@ class BadgeService implements BadgeServiceInterface
         $validator = Validator::make($request->all(), [
             'id'=>['required','string'],
             'name'=>['required','unique:badges', function($attribute, $value, $fail){
-                $badget = $this->_badge_repository_interface
-                    ->find_by_normalized_name($value);
+                $badget = $this->_badgeRepository->findByNormalizedName($value);
                 if($badget!=null){
                     $fail('name badge already exist');
                 }

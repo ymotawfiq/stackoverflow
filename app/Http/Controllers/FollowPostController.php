@@ -10,15 +10,15 @@ use Illuminate\Http\Request;
 
 class FollowPostController extends Controller
 {
-    private FollowPostServiceInterface $_followPostServiceInterface;
-    public function __construct(FollowPostServiceInterface $_followPostServiceInterface){
-        $this->_followPostServiceInterface = $_followPostServiceInterface;
+    private FollowPostServiceInterface $_followPostService;
+    public function __construct(FollowPostServiceInterface $_followPostService){
+        $this->_followPostService = $_followPostService;
     }
-    public function follow_post($post_id){
+    public function followPost($post_id){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_followPostServiceInterface->follow_post($post_id, $user);
+                return $this->_followPostService->followPost($post_id, $user);
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -31,11 +31,11 @@ class FollowPostController extends Controller
         }
     }
 
-    public function un_follow_post($post_id){
+    public function unFollowPost($post_id){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_followPostServiceInterface->un_follow_post($post_id, $user);
+                return $this->_followPostService->unFollowPost($post_id, $user);
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -48,12 +48,12 @@ class FollowPostController extends Controller
         }
     }
 
-    public function is_user_following_post($post_id){
+    public function isUserFollowingPost($post_id){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_followPostServiceInterface
-                    ->is_user_following_post($post_id, $user);
+                return $this->_followPostService
+                    ->isUserFollowingPost($post_id, $user);
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -66,12 +66,12 @@ class FollowPostController extends Controller
         }
     }
 
-    public function find_user_following_posts(){
+    public function findUserFollowingPosts(){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_followPostServiceInterface
-                    ->find_user_following_posts($user->id);
+                return $this->_followPostService
+                    ->findUserFollowingPosts($user->id);
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -84,9 +84,9 @@ class FollowPostController extends Controller
         }
     }
 
-    public function find_post_following_users($post_id){
+    public function findPostFollowingUsers($post_id){
         try{
-            return $this->_followPostServiceInterface->find_post_following_users($post_id);
+            return $this->_followPostService->findPostFollowingUsers($post_id);
         }
         catch(Exception $e){
             return response()->json(

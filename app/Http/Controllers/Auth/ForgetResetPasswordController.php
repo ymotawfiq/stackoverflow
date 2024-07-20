@@ -10,13 +10,13 @@ use Illuminate\Http\Request;
 
 class ForgetResetPasswordController extends Controller
 {
-    private ForgetResetPasswordServiceInterface $_forget_reset_password_service_interface;
+    private ForgetResetPasswordServiceInterface $_forgetResetPasswordService;
 
-    public function __construct(ForgetResetPasswordServiceInterface $_forget_reset_password_service_interface){
-        $this->_forget_reset_password_service_interface = $_forget_reset_password_service_interface;
+    public function __construct(ForgetResetPasswordServiceInterface $_forgetResetPasswordService){
+        $this->_forgetResetPasswordService = $_forgetResetPasswordService;
     }
 
-    public function forget_password(){
+    public function forgetPassword(){
         try{
             $user = auth()->user();
             if($user==null){
@@ -24,8 +24,8 @@ class ForgetResetPasswordController extends Controller
                     Response::_401_un_authorized_()
                 ); 
             }
-            return $this->_forget_reset_password_service_interface
-                ->generate_and_send_reset_password_code($user);
+            return $this->_forgetResetPasswordService
+                ->generateAndSendResetPasswordCode($user);
         }
         catch(Exception $e){
             return response()->json(
@@ -34,10 +34,10 @@ class ForgetResetPasswordController extends Controller
         }
     }
 
-    public function forget_password_by_email(Request $request){
+    public function forgetPasswordByEmail(Request $request){
         try{
-            return $this->_forget_reset_password_service_interface
-                ->generate_and_send_reset_password_code_by_email($request);
+            return $this->_forgetResetPasswordService
+                ->generateAndSendResetPasswordCodeByEmail($request);
         }
         catch(Exception $e){
             return response()->json(
@@ -46,9 +46,9 @@ class ForgetResetPasswordController extends Controller
         }
     }
 
-    public function reset_password(Request $request){
+    public function resetPassword(Request $request){
         try{
-            return $this->_forget_reset_password_service_interface->reset_password($request);
+            return $this->_forgetResetPasswordService->resetPassword($request);
         }
         catch(Exception $e){
             return response()->json(

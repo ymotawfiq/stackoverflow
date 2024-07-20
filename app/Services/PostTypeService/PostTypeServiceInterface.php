@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 
 interface PostTypeServiceInterface
 {
-    public function add_post_type(Request $request);
-    public function update_post_type(Request $request);
-    public function find_post_type($id);
-    public function delete_post_type($id);
+    public function addPostType(Request $request);
+    public function updatePostType(Request $request);
+    public function findPostType($id);
+    public function deletePostType($id);
     public function all();
 }

@@ -12,7 +12,7 @@ use Illuminate\Http\JsonResponse;
 
 class EmailService implements EmailServiceInterface
 {
-    public function resend_email_verification_link(Request $request) : JsonResponse{
+    public function resendEmailVerificationLink(Request $request) : JsonResponse{
         $validator = $this->validate_resend_email_verification_link($request);
         if($validator['is_success']){
             

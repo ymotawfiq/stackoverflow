@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class RolesService implements RolesServiceInterface
 {
-    public function assign_roles_to_user(User $user, array $roles=['USER']) : JsonResponse{
+    public function assignRolesToUser(User $user, array $roles=['USER']) : JsonResponse{
         try{
             foreach ($roles as $role_name) {
                 $role = DB::table('roles')
@@ -20,7 +20,7 @@ class RolesService implements RolesServiceInterface
                 if(empty($role) || $role===null){
                     return response()->json(Response::_404_not_found_('role not found ('. $role_name . ')'));
                 }
-                if($this->is_user_in_role($user, $role_name)){
+                if($this->isUserInRole($user, $role_name)){
                     return response()->json(
                         Response::_500_internel_server_error_('user already assigned to this role'));
                 }
@@ -35,7 +35,7 @@ class RolesService implements RolesServiceInterface
             return response()->json(Response::_500_internel_server_error_($e->getMessage()));   
         }
     }
-    public function is_user_in_role(User $user, string $role_name='USER') : bool{
+    public function isUserInRole(User $user, string $role_name='USER') : bool{
         $role = DB::table('roles')->where('name', strtoupper($role_name))->get()->first();
         if(empty($role) || $role === null){
             return false;
@@ -46,7 +46,7 @@ class RolesService implements RolesServiceInterface
         }
         return true;
     }
-    public function get_user_roles(User $user) : JsonResponse{
+    public function getUserRoles(User $user) : JsonResponse{
         try{
             $user_roles = DB::table('user_roles')->where('user_id', $user->id)->get();
             if(empty($user_roles) || $user_roles === null){
@@ -60,7 +60,7 @@ class RolesService implements RolesServiceInterface
             return response()->json(Response::_500_internel_server_error_($e->getMessage()));   
         }
     }
-    public function get_user_roles_names(User $user) : array{
+    public function getUserRolesNames(User $user) : array{
         $user_roles = DB::table('user_roles')->where('user_id', $user->id)->get();
         $roles_names=[];
         if(empty($user_roles) || $user_roles === null){

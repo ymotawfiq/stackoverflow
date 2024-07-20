@@ -9,16 +9,16 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class TokenService implements TokenServiceInterface
 {
-    private RolesServiceInterface $_roles_service_interface;
-    public function __construct(RolesServiceInterface $_roles_service_interface){
-        $this->_roles_service_interface = $_roles_service_interface;
+    private RolesServiceInterface $_rolesService;
+    public function __construct(RolesServiceInterface $_rolesService){
+        $this->_rolesService = $_rolesService;
     }
-    public function generate_token($user){
+    public function generateToken($user){
         $custom_claims = [
             'email'=> $user->email,
             'jti'=>Uuid::uuid4()->toString(),
             'user_name'=>$user->user_name,
-            'roles'=>$this->_roles_service_interface->get_user_roles_names($user),
+            'roles'=>$this->_rolesService->getUserRolesNames($user),
             'id'=>$user->id
         ];
         $token = JWTAuth::claims($custom_claims)->fromUser($user);
@@ -31,7 +31,7 @@ class TokenService implements TokenServiceInterface
             );
         }
     }
-    public function generate_token_non_2fa_user($user, $request){
+    public function generateTokenForNon2FAUser($user, $request){
         if(!$user->is_email_verified){
             return response()->json(Response::_400_bad_request_('please verify your email'));
         }
@@ -39,7 +39,7 @@ class TokenService implements TokenServiceInterface
             'email'=> $user->email,
             'jti'=>Uuid::uuid4()->toString(),
             'user_name'=>$user->user_name,
-            'roles'=>$this->_roles_service_interface->get_user_roles_names($user),
+            'roles'=>$this->_rolesService->getUserRolesNames($user),
             'id'=>$user->id
         ];
         $token = JWTAuth::claims($custom_claims)->attempt([

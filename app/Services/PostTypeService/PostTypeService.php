@@ -11,49 +11,49 @@ use Ramsey\Uuid\Uuid;
 
 class PostTypeService implements PostTypeServiceInterface
 {
-    private PostTypeRepositoryInterface $_post_type_repository;
-    public function __construct(PostTypeRepositoryInterface $_post_type_repository)
+    private PostTypeRepositoryInterface $_postTypeRepository;
+    public function __construct(PostTypeRepositoryInterface $_postTypeRepository)
     {
-        $this->_post_type_repository = $_post_type_repository;
+        $this->_postTypeRepository = $_postTypeRepository;
     }
 
-    public function add_post_type(Request $request){
+    public function addPostType(Request $request){
         $validator = $this->validate_add_request($request);
         if(!$validator['is_success']){
             return response()->json(Response::_400_bad_request_('bad request', $validator));
         }
-        $post_type = $this->_post_type_repository->create([
+        $post_type = $this->_postTypeRepository->create([
             'id'=>Uuid::uuid4()->toString(),
             'type'=>$request->type,
             'normalized_type'=>strtoupper($request->type)
         ]);
         return response()->json(Response::_201_created_('post type created successfully', $post_type));
     }
-    public function update_post_type(Request $request){
+    public function updatePostType(Request $request){
         $validator = $this->validate_update_request($request);
         if(!$validator['is_success']){
             return response()->json(Response::_400_bad_request_('bad request', $validator));
         }
-        $post_type = $this->_post_type_repository->update($request);
+        $post_type = $this->_postTypeRepository->update($request);
         return response()->json(Response::_200_success_('post type updated successfully', $post_type));
     }
-    public function find_post_type($id){
-        $post_type = $this->_post_type_repository->find_by_id($id);
+    public function findPostType($id){
+        $post_type = $this->_postTypeRepository->findById($id);
         if($post_type==null){
             return response()->json(Response::_404_not_found_('post type not found'));
         }
         return response()->json(Response::_200_success_('post type found successfully', $post_type));
     }
-    public function delete_post_type($id){
-        $post_type = $this->_post_type_repository->find_by_id($id);
+    public function deletePostType($id){
+        $post_type = $this->_postTypeRepository->findById($id);
         if($post_type==null){
             return response()->json(Response::_404_not_found_('post type not found'));
         }
-        $this->_post_type_repository->delete_by_id($id);
+        $this->_postTypeRepository->deleteById($id);
         return response()->json(Response::_204_no_content_('post type deleted successfully'));
     }
     public function all(){
-        $post_types = $this->_post_type_repository->all();
+        $post_types = $this->_postTypeRepository->all();
         if($post_types==null||$post_types->count()==0){
             return response()->json(Response::_204_no_content_('no post types found'));    
         }
@@ -71,7 +71,7 @@ class PostTypeService implements PostTypeServiceInterface
         $validator = Validator::make($request->all(), [
             'id'=>['required'],
             'type'=>['required', 'unique:post_types', function($attribute, $value, $fail){
-                $post_type = $this->_post_type_repository->find_by_normalized_type( $value );
+                $post_type = $this->_postTypeRepository->findByNormalizedType( $value );
                 if($post_type!=null){
                     $fail('post type already exists');
                 }

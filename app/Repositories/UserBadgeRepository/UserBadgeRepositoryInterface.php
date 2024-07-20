@@ -2,11 +2,12 @@
 
 namespace App\Repositories\UserBadgeRepository;
 
-use App\Repositories\Generic\AddGetAllInterface;
+use App\Repositories\Generic\AllInterface;
+use App\Repositories\Generic\CreateInterface;
 
-interface UserBadgeRepositoryInterface extends AddGetAllInterface
+interface UserBadgeRepositoryInterface extends CreateInterface, AllInterface
 {
-    public function is_user_has_badge($data);
-    public function remove_badge_from_user($data);
-    public function get_user_badges($user_id);
+    public function isUserHasBadge($data);
+    public function removeBadgeFromUser($data);
+    public function getUserBadges($user_id);
 }

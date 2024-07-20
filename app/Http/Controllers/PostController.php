@@ -12,19 +12,16 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    private PostServiceInterface $_post_service_interface;
-    private RolesServiceInterface $_roles_service_interface;
-    public function __construct(PostServiceInterface $_post_service_interface, 
-    RolesServiceInterface $_roles_service_interface){
-        $this->_post_service_interface = $_post_service_interface;
-        $this->_roles_service_interface = $_roles_service_interface;
+    private PostServiceInterface $_postService;
+    public function __construct(PostServiceInterface $_postService){
+        $this->_postService = $_postService;
     }
 
-    public function add_post(Request $request){
+    public function addPost(Request $request){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_post_service_interface->create($request, $user);        
+                return $this->_postService->create($request, $user);        
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -37,11 +34,11 @@ class PostController extends Controller
         }
     }
 
-    public function update_post(Request $request){
+    public function updatePost(Request $request){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_post_service_interface->update($request, $user);        
+                return $this->_postService->update($request, $user);        
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -54,11 +51,11 @@ class PostController extends Controller
         }
     }
 
-    public function update_post_title(Request $request){
+    public function updatePostTitle(Request $request){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_post_service_interface->update_post_title($request, $user);        
+                return $this->_postService->updatePostTitle($request, $user);        
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -72,11 +69,11 @@ class PostController extends Controller
     }
 
 
-    public function update_post_body(Request $request){
+    public function updatePostBody(Request $request){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_post_service_interface->update_post_body($request, $user);        
+                return $this->_postService->updatePostBody($request, $user);        
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -89,11 +86,11 @@ class PostController extends Controller
         }
     }
 
-    public function update_post_title_body(Request $request){
+    public function updatePostTitleAndBody(Request $request){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_post_service_interface->update_post_title_and_body($request, $user);        
+                return $this->_postService->updatePostTitleAndBody($request, $user);        
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -106,11 +103,11 @@ class PostController extends Controller
         }
     }
 
-    public function update_post_type(Request $request){
+    public function updatePostType(Request $request){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_post_service_interface->update_post_type($request, $user);        
+                return $this->_postService->updatePostType($request, $user);        
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -123,9 +120,9 @@ class PostController extends Controller
         }
     }
     
-    public function find_post_by_id($id){
+    public function findPostById($id){
         try{
-            return $this->_post_service_interface->find_by_id($id);        
+            return $this->_postService->findById($id);        
         }
         catch(Exception $e){
             return response()->json(
@@ -134,11 +131,11 @@ class PostController extends Controller
         }
     }
 
-    public function delete_post_by_id($id){
+    public function deletePostById($id){
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_post_service_interface->delete_by_id($id, $user);        
+                return $this->_postService->deleteById($id, $user);        
             }
             return response()->json(
                 Response::_401_un_authorized_()
@@ -151,9 +148,9 @@ class PostController extends Controller
         }
     }
 
-    public function all_posts(){
+    public function allPosts(){
         try{
-            return $this->_post_service_interface->all_posts();        
+            return $this->_postService->allPosts();        
         }
         catch(Exception $e){
             return response()->json(
@@ -162,9 +159,9 @@ class PostController extends Controller
         }
     }
 
-    public function user_posts($id_user_name_email){
+    public function userPosts($id_user_name_email){
         try{
-            return $this->_post_service_interface->all_user_posts($id_user_name_email);        
+            return $this->_postService->allUserPosts($id_user_name_email);        
         }
         catch(Exception $e){
             return response()->json(
@@ -177,7 +174,7 @@ class PostController extends Controller
         try{
             $user = User::where(['id'=>auth()->id()])->get()->first();
             if($user!=null){
-                return $this->_post_service_interface->all_user_posts($user->id); 
+                return $this->_postService->allUserPosts($user->id); 
             }
             return response()->json(
                 Response::_401_un_authorized_()

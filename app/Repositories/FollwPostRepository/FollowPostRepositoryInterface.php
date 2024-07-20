@@ -2,12 +2,14 @@
 
 namespace App\Repositories\FollwPostRepository;
 use App\Repositories\Generic\AddGetAllInterface;
+use App\Repositories\Generic\AllInterface;
+use App\Repositories\Generic\CreateInterface;
 use Illuminate\Http\Request;
 
-interface FollowPostRepositoryInterface extends AddGetAllInterface
+interface FollowPostRepositoryInterface extends CreateInterface, AllInterface
 {
-    public function un_follow_post($post_id, $user_id);
-    public function get_user_following_posts($user_id);
-    public function get_post_following_users($post_id);
-    public function is_user_following_post($post_id, $user_id);
+    public function unFollowPost($post_id, $user_id);
+    public function getUserFollowingPosts($user_id);
+    public function getPostFollowingUsers($post_id);
+    public function isUserFollowingPost($post_id, $user_id);
 }

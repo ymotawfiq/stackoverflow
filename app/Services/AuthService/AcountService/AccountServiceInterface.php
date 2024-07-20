@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 interface AccountServiceInterface
 {
-    public function update_account(Request $request, $user) : JsonResponse;
-    public function update_display_name(Request $request, $user) : JsonResponse;
-    public function update_user_name(Request $request, $user) : JsonResponse;
+    public function updateAccount(Request $request, $user) : JsonResponse;
+    public function updateDisplayName(Request $request, $user) : JsonResponse;
+    public function updateUserName(Request $request, $user) : JsonResponse;
 }

@@ -8,15 +8,15 @@ class TagsRepository implements TagsRepositoryInterface
 {
     public function create($data){
         DB::table('tags')->insert($data);
-        return $this->find_by_id($data['id']);
+        return $this->findById($data['id']);
     }
     public function all(){
         return DB::table('tags')->get();
     }
-    public function delete_by_id($id){
+    public function deleteById($id){
         DB::table('tags')->where('id', $id)->delete();
     }
-    public function find_by_id($id){
+    public function findById($id){
         return DB::table('tags')->where('id', $id)->get()->first();
     }
     public function update($data){
@@ -24,9 +24,9 @@ class TagsRepository implements TagsRepositoryInterface
             'name'=>$data->name,
             'normalized_name'=>strtoupper($data->name),
         ]);
-        return $this->find_by_id($data->id);
+        return $this->findById($data->id);
     }
-    public function find_by_normalized_name($name){
+    public function findByNormalizedName($name){
         return DB::table('tags')->where('normalized_name', strtoupper($name))->get()->first();
     }
 }

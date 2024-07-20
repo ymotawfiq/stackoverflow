@@ -17,12 +17,12 @@ use Ramsey\Uuid\Uuid;
 
 class PostService implements PostServiceInterface
 {
-    private PostRepositoryInterface $_post_repository_interface;
+    private PostRepositoryInterface $_postRepository;
     private PostTypeRepositoryInterface $_post_type_repository_interface;
-    public function __construct(PostRepositoryInterface $_post_repository_interface, 
+    public function __construct(PostRepositoryInterface $_postRepository, 
     PostTypeRepositoryInterface $_post_type_repository_interface)
     {
-        $this->_post_repository_interface = $_post_repository_interface;
+        $this->_postRepository = $_postRepository;
         $this->_post_type_repository_interface = $_post_type_repository_interface;
     }
     public function create(Request $request, User $user){
@@ -32,7 +32,7 @@ class PostService implements PostServiceInterface
                 Response::_400_bad_request_('bad request', $validator)
             );
         }
-        $new_post = $this->_post_repository_interface->create([
+        $new_post = $this->_postRepository->create([
             'id'=>Uuid::uuid4()->toString(),
             'title'=> $request->title,
             'body'=>$request->body,
@@ -54,8 +54,8 @@ class PostService implements PostServiceInterface
                 Response::_400_bad_request_('bad request', $validator)
             );
         }
-        $is_user_post = $this->_post_repository_interface
-            ->find_post_by_id_user_id($request->id, $user->id);
+        $is_user_post = $this->_postRepository
+            ->findPostByIdUserId($request->id, $user->id);
         if($is_user_post==null){
             return response()->json(
                 Response::_403_forbidden_()
@@ -64,38 +64,38 @@ class PostService implements PostServiceInterface
         $updated_post_dto = new UpdatePostDto($request->id, $request->title,
             $request->body, $request->post_type);
         $updated_post_dto->post_type = $this->post_type( $request->post_type )->id;
-        $updated_post = $this->_post_repository_interface->update($updated_post_dto);
+        $updated_post = $this->_postRepository->update($updated_post_dto);
         return response()->json(
             Response::_200_success_('post updated successfully', $updated_post)
         );
     }
-    public function find_by_id($post_id){
-        $post = $this->_post_repository_interface->find_by_id($post_id);
+    public function findById($post_id){
+        $post = $this->_postRepository->findById($post_id);
         if($post==null){
             return response()->json(
                 Response::_404_not_found_('post not found')
             );
         }
-        $this->_post_repository_interface->increace_post_views_number($post->id);
+        $this->_postRepository->increacePostViewsNumber($post->id);
         return response()->json(
             Response::_200_success_('post found successfully', $post)
         );
     }
-    public function delete_by_id($post_id, User $user){
-        $post = $this->_post_repository_interface
-            ->find_post_by_id_user_id($post_id, $user->id);
+    public function deleteById($post_id, User $user){
+        $post = $this->_postRepository
+            ->findPostByIdUserId($post_id, $user->id);
         if($post==null){
             return response()->json(
                 Response::_403_forbidden_()
             );
         }
-        $this->_post_repository_interface->delete_by_id($post_id);
+        $this->_postRepository->deleteById($post_id);
         return response()->json(
             Response::_204_no_content_('post deleted successfully')
         );
     }
-    public function all_posts(){
-        $posts = $this->_post_repository_interface->all();
+    public function allPosts(){
+        $posts = $this->_postRepository->all();
         if($posts==null || $posts->count()==0){
             return response()->json(
                 Response::_204_no_content_('no posts found')
@@ -105,7 +105,7 @@ class PostService implements PostServiceInterface
             Response::_200_success_('post found successfully', $posts)
         );
     }
-    public function all_user_posts($user_id_user_name_email){
+    public function allUserPosts($user_id_user_name_email){
         $user = GenericUser::get_user_by_id_or_email_or_user_name( 
             $user_id_user_name_email );
         if($user==null){
@@ -113,8 +113,7 @@ class PostService implements PostServiceInterface
                 Response::_404_not_found_('user not found')
             );
         }
-        $posts = $this->_post_repository_interface
-            ->find_user_posts_by_user_id($user->id);
+        $posts = $this->_postRepository->findUserPostsByUserId($user->id);
         if($posts==null || $posts->count()==0){
             return response()->json(
                 Response::_204_no_content_('no posts found')
@@ -124,54 +123,52 @@ class PostService implements PostServiceInterface
             Response::_200_success_('post found successfully', $posts)
         );
     }
-    public function update_post_title(Request $request, User $user){
+    public function updatePostTitle(Request $request, User $user){
         $validator = $this->validate_update_post_title($request);
         if(!$validator['is_success']){
             return response()->json(
                 Response::_400_bad_request_('bad request', $validator)
             );
         }
-        $is_user_post = $this->_post_repository_interface
-            ->find_post_by_id_user_id($request->id, $user->id);
+        $is_user_post = $this->_postRepository
+            ->findPostByIdUserId($request->id, $user->id);
         if($is_user_post==null){
             return response()->json(
                 Response::_403_forbidden_()
             );
         }
-        $updated_post = $this->_post_repository_interface->update_post_title($request);
+        $updated_post = $this->_postRepository->updatePostTitle($request);
         return response()->json(
             Response::_200_success_('post title updated successfully', $updated_post)
         );
     }
-    public function update_post_body(Request $request, User $user){
+    public function updatePostBody(Request $request, User $user){
         $validator = $this->validate_update_post_body($request);
         if(!$validator['is_success']){
             return response()->json(
                 Response::_400_bad_request_('bad request', $validator)
             );
         }
-        $is_user_post = $this->_post_repository_interface
-            ->find_post_by_id_user_id($request->id, $user->id);
+        $is_user_post = $this->_postRepository->findPostByIdUserId($request->id, $user->id);
         if($is_user_post==null){
             return response()->json(
                 Response::_403_forbidden_()
             );
         }
-        $updated_post = $this->_post_repository_interface->update_post_body($request);
+        $updated_post = $this->_postRepository->updatePostBody($request);
         return response()->json(
             Response::_200_success_('post body updated successfully', $updated_post)
         );
     }
 
-    public function update_post_type(Request $request, User $user){
+    public function updatePostType(Request $request, User $user){
         $validator = $this->validate_update_post_type($request);
         if(!$validator['is_success']){
             return response()->json(
                 Response::_400_bad_request_('bad request', $validator)
             );
         }
-        $is_user_post = $this->_post_repository_interface
-            ->find_post_by_id_user_id($request->id, $user->id);
+        $is_user_post = $this->_postRepository->findPostByIdUserId($request->id, $user->id);
         if($is_user_post==null){
             return response()->json(
                 Response::_403_forbidden_()
@@ -179,28 +176,27 @@ class PostService implements PostServiceInterface
         }
         $post_type_dto = new UpdatePostTypeDto($request->id, $request->post_type);
         $post_type_dto->post_type = $this->post_type($request->post_type)->id;
-        $updated_post = $this->_post_repository_interface->update_post_type($post_type_dto);
+        $updated_post = $this->_postRepository->updatePostType($post_type_dto);
         return response()->json(
             Response::_200_success_('post type updated successfully', $updated_post)
         );
     }
 
-    public function update_post_title_and_body(Request $request, User $user){
+    public function updatePostTitleAndBody(Request $request, User $user){
         $validator = $this->validate_update_post_title_body($request);
         if(!$validator['is_success']){
             return response()->json(
                 Response::_400_bad_request_('bad request', $validator)
             );
         }
-        $is_user_post = $this->_post_repository_interface
-            ->find_post_by_id_user_id($request->id, $user->id);
+        $is_user_post = $this->_postRepository
+            ->findPostByIdUserId($request->id, $user->id);
         if($is_user_post==null){
             return response()->json(
                 Response::_403_forbidden_()
             );
         }
-        $updated_post = $this->_post_repository_interface
-            ->update_post_title_and_body($request);
+        $updated_post = $this->_postRepository->updatePostTitleAndBody($request);
         return response()->json(
             Response::_200_success_('post title and body updated successfully', $updated_post)
         );
@@ -224,7 +220,7 @@ class PostService implements PostServiceInterface
     private function validate_update_post(Request $request){
         $validator = Validator::make($request->all(), [
             'id'=>['required', function($attribute, $value, $fail) {
-                $post = $this->_post_repository_interface->find_by_id( $value );
+                $post = $this->_postRepository->findById( $value );
                 if( $post == null ){
                     $fail('post not found');
                 }
@@ -244,7 +240,7 @@ class PostService implements PostServiceInterface
     private function validate_update_post_title(Request $request){
         $validator = Validator::make($request->all(), [
             'id'=>['required', function($attribute, $value, $fail) {
-                $post = $this->_post_repository_interface->find_by_id( $value );
+                $post = $this->_postRepository->findById( $value );
                 if( $post == null ){
                     $fail('post not found');
                 }
@@ -257,7 +253,7 @@ class PostService implements PostServiceInterface
     private function validate_update_post_body(Request $request){
         $validator = Validator::make($request->all(), [
             'id'=>['required', function($attribute, $value, $fail) {
-                $post = $this->_post_repository_interface->find_by_id( $value );
+                $post = $this->_postRepository->findById( $value );
                 if( $post == null ){
                     $fail('post not found');
                 }
@@ -270,7 +266,7 @@ class PostService implements PostServiceInterface
     private function validate_update_post_title_body(Request $request){
         $validator = Validator::make($request->all(), [
             'id'=>['required', function($attribute, $value, $fail) {
-                $post = $this->_post_repository_interface->find_by_id( $value );
+                $post = $this->_postRepository->findById( $value );
                 if( $post == null ){
                     $fail('post not found');
                 }
@@ -284,7 +280,7 @@ class PostService implements PostServiceInterface
     private function validate_update_post_type(Request $request){
         $validator = Validator::make($request->all(), [
             'id'=>['required', function($attribute, $value, $fail) {
-                $post = $this->_post_repository_interface->find_by_id( $value );
+                $post = $this->_postRepository->findById( $value );
                 if( $post == null ){
                     $fail('post not found');
                 }
@@ -300,8 +296,8 @@ class PostService implements PostServiceInterface
     }
 
     private function post_type($id_or_type){
-        $post_type_1 = $this->_post_type_repository_interface->find_by_id($id_or_type);
-        $post_type_2 = $this->_post_type_repository_interface->find_by_normalized_type($id_or_type);
+        $post_type_1 = $this->_post_type_repository_interface->findById($id_or_type);
+        $post_type_2 = $this->_post_type_repository_interface->findByNormalizedType($id_or_type);
         return $post_type_1==null?$post_type_2:$post_type_1;
     }
 

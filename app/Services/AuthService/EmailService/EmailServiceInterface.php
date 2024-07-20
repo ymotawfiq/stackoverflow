@@ -7,5 +7,5 @@ use Illuminate\Http\JsonResponse;
 
 interface EmailServiceInterface
 {
-    public function resend_email_verification_link(Request $request) : JsonResponse;
+    public function resendEmailVerificationLink(Request $request) : JsonResponse;
 }
