@@ -7,5 +7,5 @@ use App\Repositories\Generic\UpdateInterface;
 
 interface PostHistoryTypesRepositoryInterface extends AddGetAllInterface, FindDeleteInterface, UpdateInterface
 {
-    public function find_by_normalized_name($name);
+    public function find_by_normalized_type($normalized_type);
 }

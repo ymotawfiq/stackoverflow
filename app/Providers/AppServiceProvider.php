@@ -6,6 +6,8 @@ use App\Repositories\BadgeRepository\BadgeRepository;
 use App\Repositories\BadgeRepository\BadgeRepositoryInterface;
 use App\Repositories\FollwPostRepository\FollowPostRepository;
 use App\Repositories\FollwPostRepository\FollowPostRepositoryInterface;
+use App\Repositories\PostHistoryTypesRepository\PostHistoryTypesRepository;
+use App\Repositories\PostHistoryTypesRepository\PostHistoryTypesRepositoryInterface;
 use App\Repositories\PostRepository\PostRepository;
 use App\Repositories\PostRepository\PostRepositoryInterface;
 use App\Repositories\PostsListsRepository\PostListRepository;
@@ -40,6 +42,8 @@ use App\Services\BadgeService\BadgeService;
 use App\Services\BadgeService\BadgeServiceInterface;
 use App\Services\FollwPostService\FollowPostService;
 use App\Services\FollwPostService\FollowPostServiceInterface;
+use App\Services\PostHistoryTypesService\PostHistoryTypesService;
+use App\Services\PostHistoryTypesService\PostHistoryTypesServiceInterface;
 use App\Services\PostService\PostService;
 use App\Services\PostService\PostServiceInterface;
 use App\Services\PostsListsService\PostListService;
@@ -82,6 +86,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PostListServiceInterface::class, PostListService::class);
         $this->app->bind(SavePostServiceInterface::class, SavePostService::class);
         $this->app->bind(TagsServiceInterface::class, TagsService::class);
+        $this->app->bind(PostHistoryTypesServiceInterface::class, PostHistoryTypesService::class);
         // repositories
         $this->app->bind(BadgeRepositoryInterface::class, BadgeRepository::class);
         $this->app->bind(UserBadgeRepositoryInterface::class, UserBadgeRepository::class);
@@ -92,6 +97,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PostListRepositoryInterface::class, PostListRepository::class);
         $this->app->bind(SavePostRepositoryInterface::class, SavePostRepository::class);
         $this->app->bind(TagsRepositoryInterface::class, TagsRepository::class);
+        $this->app->bind(PostHistoryTypesRepositoryInterface::class, PostHistoryTypesRepository::class);
     }
 
     /**
